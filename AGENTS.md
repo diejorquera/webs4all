@@ -1,10 +1,10 @@
 ## Proyecto
 Landing de una página + páginas legales para webs4all.cl, servicio de
 diseño web de Diego en Chile. Idioma del sitio: español de Chile, tuteo.
-Stack: Astro 5, Tailwind 4, islas React solo cuando hay interactividad.
+Stack: Astro 7, Tailwind 4, islas React solo cuando hay interactividad.
 
 ## Fuente de verdad del diseño
-- design-reference/ está en .gitignore. Es solo lectura: artboards HTML,
+- design-references/ está en .gitignore. Es solo lectura: artboards HTML,
   tokens y logos. Nunca lo importes desde src/ ni lo modifiques.
 - Los textos se copian EXACTOS de los artboards. No reescribas, resumas
   ni "mejores" copy. Si falta un texto, deja un marcador [PENDIENTE: ...]
