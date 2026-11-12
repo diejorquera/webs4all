@@ -1,1 +1,232 @@
-<section>Services</section>
+---
+import Button from '../ui/Button.astro';
+
+const services = [
+  {
+    n: '01',
+    title: 'Diseño',
+    lead: 'Diseño tu web según lo que necesites, pensada para que se vea bien y se entienda rápido.',
+    items: [
+      'Diseño de tu página web desde cero',
+      'Colores y estilo visual acordes a tu marca',
+      'Diseño adaptable a celular, tablet y computador',
+    ],
+  },
+  {
+    n: '02',
+    title: 'Desarrollo',
+    lead: 'Hago tu página web o tienda online con la tecnología que mejor te acomode, no con la más cara.',
+    items: [
+      'Páginas hechas a medida con React y Tailwind',
+      'Sitios en WordPress, que puedes administrar tú',
+      'Tiendas online en Shopify o WooCommerce',
+      'Proyectos en Webflow, si lo prefieres',
+    ],
+  },
+  {
+    n: '03',
+    title: 'SEO',
+    lead: 'Tu página tiene que existir en Google, y además estar bien preparada para que te encuentren.',
+    items: [
+      'SEO técnico: velocidad, estructura y buen funcionamiento en celular',
+      'Optimización de cada página para Google',
+      'Búsqueda de las palabras clave que usan tus clientes',
+      'Ideas de contenido y estrategia para seguir creciendo',
+    ],
+  },
+  {
+    n: '04',
+    title: 'Mantención',
+    lead: '¿Tu página carga lento, no guarda los datos de tus formularios o simplemente ya no te gusta?',
+    items: [
+      'Actualizaciones y cuidado del sitio',
+      'Cambios de textos, fotos y precios',
+      'Nuevas secciones y funciones',
+      'Traspaso de tu sitio y tus datos a un hosting nuevo',
+      'Traspaso de tus correos',
+    ],
+  },
+];
+---
+
+<section id="servicios" class="svc-section relative isolate bg-surface-warm text-ink">
+  <!-- Grano (multiply, como en el artboard) -->
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    class="pointer-events-none absolute inset-0 z-20 h-full w-full opacity-40 mix-blend-multiply"
+  >
+    <filter id="grain-servicios" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+      ></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-servicios)"></rect>
+  </svg>
+
+  <div class="svc-grid mx-auto w-full max-w-(--container-max) px-(--space-gutter-x) py-(--space-section-y)">
+    <!-- Izquierda: título y párrafo (sticky en escritorio) -->
+    <div class="svc-intro flex max-w-[460px] flex-col gap-(--space-20)">
+      <h2 class="svc-h2 m-0 font-extrabold uppercase">¿Cómo puedo ayudarte?</h2>
+      <p class="svc-lead m-0">
+        Si hoy solo tienes Instagram, tu página está desactualizada o quien te la hizo desapareció,
+        estas son las cuatro cosas en las que puedo ayudarte.
+      </p>
+      <!-- Botón de escritorio -->
+      <div class="flex pt-(--space-12) max-[900px]:hidden">
+        <Button
+          href="#precios"
+          variant="secondary"
+          arrow
+          class="[--btn-hover-bg:var(--color-ink)] [--btn-hover-fg:var(--color-surface-warm)]"
+        >
+          Ver precios y planes
+        </Button>
+      </div>
+    </div>
+
+    <!-- Derecha: tarjetas apiladas -->
+    <div class="flex min-w-0 flex-col gap-(--space-48)">
+      <ol class="svc-list m-0 flex list-none flex-col p-0" role="list">
+        {
+          services.map((s) => (
+            <li class="svc-card">
+              <div class="svc-head">
+                <span class="svc-num">{s.n}</span>
+                <h3 class="svc-h3 m-0 font-extrabold uppercase">{s.title}</h3>
+              </div>
+              <div class="svc-body">
+                <p class="svc-desc m-0">{s.lead}</p>
+                <ul class="svc-items m-0 list-none p-0">
+                  {s.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <!-- Botón de móvil / tablet -->
+      <div class="flex min-[901px]:hidden">
+        <Button href="#precios" variant="dark" arrow>Ver precios y planes</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .svc-section {
+    /* paso entre tarjetas apiladas: alto de la cabecera (72px) */
+    --svc-step: calc(var(--space-64) + var(--space-8));
+    --svc-top: calc(var(--nav-height) + var(--space-8));
+  }
+
+  /* Móvil / tablet: una columna, sin sticky */
+  .svc-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-40);
+  }
+
+  .svc-h2 {
+    font-size: var(--text-h2-section);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+  }
+  .svc-lead {
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .svc-card {
+    box-sizing: border-box;
+    min-height: 400px;
+    padding-bottom: var(--space-56);
+    background: var(--color-surface-warm);
+    border-top: var(--border-width) solid var(--color-border-strong);
+  }
+  .svc-card:last-child {
+    border-bottom: var(--border-width) solid var(--color-border-strong);
+  }
+  .svc-list {
+    gap: var(--space-48);
+  }
+
+  .svc-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-20);
+    height: var(--space-64);
+  }
+  .svc-num {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-tertiary);
+  }
+  .svc-h3 {
+    font-size: var(--text-h3-card);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .svc-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-24) var(--space-48);
+    padding-top: var(--space-16);
+  }
+  .svc-desc {
+    flex: 1 1 260px;
+    /* medidas del artboard sin token equivalente */
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.45;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+  }
+  .svc-items {
+    flex: 1 1 300px;
+    font-size: var(--text-body);
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+  }
+  .svc-items li {
+    padding: var(--space-12) 0;
+    border-top: var(--border-width) solid var(--color-border-warm);
+  }
+
+  /* Escritorio: dos columnas, intro fija y tarjetas apiladas con sticky */
+  @media (min-width: 901px) {
+    .svc-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 460px) minmax(0, 1fr);
+      align-items: start;
+      column-gap: clamp(40px, 6vw, 96px);
+    }
+    .svc-intro {
+      position: sticky;
+      top: var(--svc-top);
+    }
+    .svc-head {
+      height: var(--svc-step);
+    }
+    .svc-card {
+      position: sticky;
+    }
+    .svc-card:nth-child(1) {
+      top: var(--svc-top);
+    }
+    .svc-card:nth-child(2) {
+      top: calc(var(--svc-top) + var(--svc-step));
+    }
+    .svc-card:nth-child(3) {
+      top: calc(var(--svc-top) + var(--svc-step) * 2);
+    }
+    .svc-card:nth-child(4) {
+      top: calc(var(--svc-top) + var(--svc-step) * 3);
+    }
+  }
+</style>

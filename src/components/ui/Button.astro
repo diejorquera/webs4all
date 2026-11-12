@@ -1,1 +1,127 @@
-<span>Button</span>
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'dark' | 'light';
+  /** Flecha final (si no se usa el slot "end") */
+  arrow?: boolean;
+}
+const { href, variant = 'primary', arrow = false, class: className, ...attrs } = Astro.props;
+const hasStart = Astro.slots.has('start');
+const hasEnd = Astro.slots.has('end');
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn-${variant}`, { 'btn-has-start': hasStart }, className]}
+  {...attrs}
+>
+  {
+    hasStart && (
+      <span class="btn-start" aria-hidden="true">
+        <slot name="start" />
+      </span>
+    )
+  }
+  <span><slot /></span>
+  <slot name="end" />
+  {
+    arrow && !hasEnd && (
+      <svg
+        aria-hidden="true"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M3 8h10M9 4l4 4-4 4" />
+      </svg>
+    )
+  }
+</a>
+
+<style>
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--space-56);
+    box-sizing: border-box;
+    border-radius: var(--radius-md);
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    transition:
+      background-color var(--duration-200),
+      color var(--duration-200);
+  }
+
+  /* Primario (azul) */
+  .btn-primary {
+    gap: var(--space-12);
+    padding: 0 var(--space-24);
+    background-image: var(--gradient-button-blue);
+    color: var(--color-text-on-dark);
+  }
+  .btn-primary.btn-has-start {
+    padding: var(--space-4) var(--space-24) var(--space-4) var(--space-4);
+    justify-content: flex-start;
+  }
+  .btn-start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--target-min);
+    height: var(--target-min);
+    border-radius: var(--radius-sm);
+    background: var(--color-navy-900);
+    color: var(--color-text-on-dark);
+  }
+  .btn-primary:hover {
+    background-image: none;
+    background-color: var(--btn-hover-bg, var(--color-surface-white));
+    color: var(--btn-hover-fg, var(--color-navy-900));
+  }
+
+  /* Secundario: borde y color heredan del contexto (currentColor) */
+  .btn-secondary {
+    gap: var(--space-10);
+    padding: 0 var(--space-24);
+    border: var(--border-width) solid currentColor;
+    color: inherit;
+  }
+  .btn-secondary:hover {
+    background-color: var(--btn-hover-bg, var(--color-surface-white));
+    color: var(--btn-hover-fg, var(--color-navy-900));
+  }
+
+  /* Oscuro (sobre fondo claro) */
+  .btn-dark {
+    gap: var(--space-10);
+    padding: 0 var(--space-24);
+    background-color: var(--color-ink);
+    color: var(--color-surface-warm);
+  }
+  .btn-dark:hover {
+    background-color: var(--color-text-secondary);
+    color: var(--color-surface-warm);
+  }
+
+  /* Claro (sobre fondo violeta): el texto no cambia en hover */
+  .btn-light {
+    gap: var(--space-10);
+    padding: 0 var(--space-24);
+    background-color: var(--color-surface-white);
+    color: var(--color-violet-900);
+  }
+  .btn-light:hover {
+    background-color: var(--color-paper);
+    color: var(--color-violet-900);
+  }
+</style>

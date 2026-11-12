@@ -1,16 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Services from '../components/sections/Services.astro';
+import CtaBand from '../components/sections/CtaBand.astro';
 ---
 
-<!-- PRUEBA TEMPORAL: tres bloques de 100vh para probar scroll y resaltado del nav -->
 <BaseLayout title="webs4all">
-  <section id="servicios" class="h-screen bg-surface-warm p-(--space-48)">
-    <h1>Servicios (prueba)</h1>
-  </section>
-  <section id="trabajos" class="h-screen bg-surface-lilac p-(--space-48)">
-    <h2>Trabajos (prueba)</h2>
-  </section>
-  <section id="precios" class="h-screen bg-violet-700 p-(--space-48) text-white">
-    <h2>Precios (prueba)</h2>
-  </section>
+  <Hero />
+  <Services />
+  <CtaBand />
 </BaseLayout>

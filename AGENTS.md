@@ -1,22 +1,35 @@
-## Development
+## Proyecto
+Landing de una página + páginas legales para webs4all.cl, servicio de
+diseño web de Diego en Chile. Idioma del sitio: español de Chile, tuteo.
+Stack: Astro 5, Tailwind 4, islas React solo cuando hay interactividad.
 
-When starting the dev server, use background mode:
+## Fuente de verdad del diseño
+- design-reference/ está en .gitignore. Es solo lectura: artboards HTML,
+  tokens y logos. Nunca lo importes desde src/ ni lo modifiques.
+- Los textos se copian EXACTOS de los artboards. No reescribas, resumas
+  ni "mejores" copy. Si falta un texto, deja un marcador [PENDIENTE: ...]
+  y avísame.
+- Datos del sitio solo desde src/config/site.ts (email, LinkedIn, ciudad,
+  WhatsApp). El WhatsApp aún está vacío: no inventes un número.
 
-```
-astro dev --background
-```
+## Estilos
+- Solo tokens de src/styles/global.css (variables y @theme). Prohibido
+  hardcodear colores, tamaños, radios o duraciones que ya tengan token.
+- Si algo no tiene token, pregúntame antes de crearlo.
+- Tipografía: Plus Jakarta Sans. Botones con radio 8px.
+- Breakpoint del nav y menú móvil: 901px.
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+## Accesibilidad (obligatorio)
+- Foco visible, objetivos táctiles de 44px mínimo, contraste AA.
+- Respetar prefers-reduced-motion en toda animación (el halo del cursor
+  es solo escritorio y no se monta en táctil).
+- Un solo h1 por página; HTML semántico; aria-hidden en decoración.
 
-## Documentation
-
-Full documentation: https://docs.astro.build
-
-Consult these guides before working on related tasks:
-
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+## Reglas de trabajo
+- Trabaja una fase a la vez y no toques secciones que no te pido.
+- Interactividad primero en CSS/Astro; React solo si es imprescindible
+  (client:visible o client:idle, nunca client:load salvo justificación).
+- Imágenes con astro:assets, con width/height y alt.
+- Al terminar cada tarea corre npm run build y reporta errores.
+- Páginas /404 y /gracias llevan noindex.
+- No instales dependencias nuevas sin decirme cuáles y por qué.

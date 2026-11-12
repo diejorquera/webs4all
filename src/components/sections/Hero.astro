@@ -1,1 +1,260 @@
-<section>Hero</section>
+---
+import Button from '../ui/Button.astro';
+import CursorHalo from '../islands/CursorHalo';
+import { buildWhatsappUrl } from '../../lib/whatsapp';
+
+const whatsappHref = buildWhatsappUrl();
+
+const endings = ['vendas en internet', 'aparezcas en Google', 'destaques en tu rubro'];
+
+const phrases = [
+  'SEO personalizado',
+  'Diseño a medida',
+  'Soluciones técnicas',
+  'Textos que venden',
+  'Publicación incluida',
+  'Precio cerrado',
+  'Trato directo conmigo',
+  'Pensado para Google',
+];
+---
+
+<section
+  id="top"
+  class="hero relative isolate flex flex-col bg-gradient-navy text-(--color-text-on-dark)"
+>
+  <CursorHalo client:media="(min-width: 901px)" />
+
+  <!-- Grano -->
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    class="pointer-events-none absolute inset-0 z-60 h-full w-full opacity-35 mix-blend-overlay"
+  >
+    <filter id="grain-hero" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+      ></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-hero)"></rect>
+  </svg>
+
+  <div class="hero-main relative z-1 mx-auto flex w-full max-w-(--container-max) grow flex-col justify-center px-(--space-gutter-x)">
+    <h1 class="hero-title m-0 font-extrabold uppercase text-(--color-text-on-dark)">
+      <span class="sr-only">
+        Hago páginas web para que vendas en internet, aparezcas en Google y destaques en tu rubro
+      </span>
+      <span aria-hidden="true" class="block">
+        <span class="block">Hago páginas web</span>
+        <span class="block">para que</span>
+        <span class="rot-wrap grid">
+          {
+            endings.map((text, i) => (
+              <span class={`rot rot-${i + 1}`}>{text}</span>
+            ))
+          }
+        </span>
+      </span>
+    </h1>
+
+    <div class="hero-lower flex flex-wrap items-end justify-between">
+      <p class="hero-lead m-0">
+        Soy Diego, diseñador web para pymes y emprendedores en Chile. Me cuentas de tu negocio y yo
+        me encargo del diseño, los textos y la publicación. Trabajas directo conmigo, con precio
+        cerrado y sin IVA.
+      </p>
+      <div class="flex w-full flex-col items-stretch gap-(--space-12) sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+        <Button href={whatsappHref} variant="primary" class="w-full sm:w-auto">
+          <svg
+            slot="start"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 220 140"
+            fill="none"
+            stroke="currentColor"
+            class="block h-auto w-[30px]"
+          >
+            <path
+              transform="translate(77.5 -30) skewX(-30)"
+              d="M10 50L38 150L66 70L94 150L142 50V150M110 115H180"
+              stroke-width="15"
+              stroke-linejoin="miter"></path>
+          </svg>
+          Conversemos por WhatsApp
+        </Button>
+        <Button href="#precios" variant="secondary" class="w-full sm:w-auto">
+          Ver planes y precios
+          <svg
+            slot="end"
+            aria-hidden="true"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 8h10M9 4l4 4-4 4"></path>
+          </svg>
+        </Button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banda de frases -->
+  <div
+    role="region"
+    aria-label="Lo que hago"
+    class="marquee-wrap relative z-1 w-full overflow-hidden bg-gradient-violet text-(--color-text-on-dark)"
+  >
+    <div class="marquee-track">
+      {
+        [false, true].map((hidden) => (
+          <ul class="marquee-group" aria-hidden={hidden ? 'true' : undefined}>
+            {phrases.map((text) => (
+              <li class="marquee-item">
+                <span>{text}</span>
+                <svg
+                  aria-hidden="true"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                  class="shrink-0"
+                >
+                  <path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19" />
+                </svg>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Ocupa la pantalla junto con el nav sticky (nav-height) */
+  .hero {
+    min-height: 100vh;
+    min-height: calc(100svh - var(--nav-height));
+  }
+  @supports (height: 100svh) {
+    .hero {
+      min-height: calc(100svh - var(--nav-height));
+    }
+  }
+
+  /* Medidas del artboard sin token equivalente */
+  .hero-main {
+    padding-block: clamp(24px, 4vw, 56px);
+    gap: clamp(28px, 3.5vw, 48px);
+  }
+  .hero-lower {
+    gap: var(--space-32) var(--space-48);
+  }
+
+  .hero-title {
+    font-size: var(--text-display-hero);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .hero-lead {
+    flex: 1 1 360px;
+    max-width: 580px;
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-on-dark-muted);
+  }
+
+  /* Terminaciones rotativas: se apilan en la misma celda del grid */
+  .rot-wrap {
+    color: color-mix(in srgb, var(--color-text-on-dark) 60%, transparent);
+  }
+  .rot {
+    grid-area: 1 / 1;
+    opacity: 0;
+  }
+  .rot-1 {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rot {
+      animation: rot var(--duration-rotate-cycle) var(--ease-rotate) infinite both;
+    }
+    .rot-2 {
+      animation-delay: calc(var(--duration-rotate-cycle) / 3);
+    }
+    .rot-3 {
+      animation-delay: calc(var(--duration-rotate-cycle) / 3 * 2);
+    }
+  }
+  @keyframes rot {
+    0% {
+      opacity: 0;
+      transform: translateY(0.4em);
+    }
+    5% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    29% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    33.3% {
+      opacity: 0;
+      transform: translateY(-0.4em);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-0.4em);
+    }
+  }
+
+  /* Banda de frases */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    padding: var(--space-14) 0;
+    font-weight: var(--font-weight-bold);
+    /* tamaño del artboard actual (el anterior era demasiado grande) */
+    font-size: clamp(13px, 1.25vw, 18px);
+    letter-spacing: var(--tracking-marquee);
+    text-transform: uppercase;
+    line-height: var(--leading-none);
+    animation: marquee var(--duration-marquee) var(--ease-linear) infinite;
+  }
+  .marquee-wrap:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-28);
+    padding-right: var(--space-28);
+    white-space: nowrap;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

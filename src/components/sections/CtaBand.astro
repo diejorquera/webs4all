@@ -1,1 +1,82 @@
-<section>CtaBand</section>
+---
+import Button from '../ui/Button.astro';
+import CursorHalo from '../islands/CursorHalo';
+import { buildWhatsappUrl } from '../../lib/whatsapp';
+
+const whatsappHref = buildWhatsappUrl();
+---
+
+<section
+  id="conversemos"
+  class="relative isolate overflow-hidden bg-gradient-violet text-(--color-text-on-dark)"
+>
+  <!-- Halo púrpura y naranja que sigue al cursor (solo escritorio) -->
+  <CursorHalo
+    client:media="(min-width: 901px)"
+    inner="240,166,57"
+    mid="136,48,161"
+    radius={380}
+    idleRadius={380}
+    initialAt="82% 105%"
+    idleAlpha={[0.38, 0.34]}
+    activeAlpha={[0.38, 0.34]}
+    idleMidStop={42}
+    activeMidStop={42}
+  />
+
+  <!-- Grano -->
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    class="pointer-events-none absolute inset-0 z-2 h-full w-full opacity-35 mix-blend-overlay"
+  >
+    <filter id="grain-cta" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+      ></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-cta)"></rect>
+  </svg>
+
+  <div class="cta-inner relative z-3 mx-auto flex w-full max-w-(--container-max) flex-wrap items-end justify-between px-(--space-gutter-x)">
+    <h2 class="cta-h2 m-0 font-extrabold uppercase text-(--color-text-on-dark)">
+      ¿Algo de esto es lo que necesitas?
+    </h2>
+
+    <div class="flex max-w-[460px] flex-1 basis-[320px] flex-col items-start gap-(--space-24)">
+      <p class="cta-lead m-0">
+        Cuéntame de tu negocio por WhatsApp y vemos juntos qué te conviene. Sin compromiso y con
+        precio cerrado antes de empezar.
+      </p>
+      <Button
+        href={whatsappHref}
+        variant="light"
+        arrow
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Conversemos por WhatsApp
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Medidas del artboard sin token equivalente */
+  .cta-inner {
+    padding-block: clamp(64px, 8vw, 112px);
+    gap: var(--space-32) var(--space-64);
+  }
+  .cta-h2 {
+    flex: 1 1 420px;
+    max-width: 760px;
+    font-size: clamp(32px, 4.6vw, 68px);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-heading);
+  }
+  .cta-lead {
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-on-dark);
+  }
+</style>
