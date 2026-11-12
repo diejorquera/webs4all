@@ -1,16 +1,16 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<!-- PRUEBA TEMPORAL: tres bloques de 100vh para probar scroll y resaltado del nav -->
+<BaseLayout title="webs4all">
+  <section id="servicios" class="h-screen bg-surface-warm p-(--space-48)">
+    <h1>Servicios (prueba)</h1>
+  </section>
+  <section id="trabajos" class="h-screen bg-surface-lilac p-(--space-48)">
+    <h2>Trabajos (prueba)</h2>
+  </section>
+  <section id="precios" class="h-screen bg-violet-700 p-(--space-48) text-white">
+    <h2>Precios (prueba)</h2>
+  </section>
+</BaseLayout>

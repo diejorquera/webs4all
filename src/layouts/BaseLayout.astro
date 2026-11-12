@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+import NavBar from '../components/layout/NavBar.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = 'webs4all', description } = Astro.props;
+
+// En la home las anclas son locales (#servicios); en otras páginas, /#servicios
+const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-(--space-16) focus:top-(--space-16) focus:z-200 focus:rounded-md focus:bg-surface-white focus:px-(--space-16) focus:py-(--space-12) focus:font-semibold focus:text-ink"
+    >
+      Saltar al contenido
+    </a>
+    <NavBar site={site} hrefPrefix={hrefPrefix} />
+    <main id="contenido">
+      <slot />
+    </main>
+    <SiteFooter site={site} />
+  </body>
+</html>

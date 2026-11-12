@@ -1,0 +1,56 @@
+---
+import Logo from '../../assets/logos/webs4all-20.svg';
+import type { site as SiteConfig } from '../../config/site';
+
+interface Props {
+  site: typeof SiteConfig;
+}
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-ink text-(--color-text-on-dark)">
+  <div class="mx-auto w-full max-w-(--container-max) px-(--space-gutter-x) pt-(--space-32)">
+    <div class="flex flex-wrap items-center justify-between gap-x-(--space-40) gap-y-(--space-12) pb-(--space-16)">
+      <a
+        href="/"
+        aria-label="webs4all.cl, inicio"
+        class="flex min-h-(--target-min) items-center text-(--color-text-on-dark) transition-opacity duration-(--duration-150) hover:opacity-80"
+      >
+        <Logo stroke="currentColor" aria-hidden="true" class="block h-[26px] w-auto" />
+      </a>
+      <nav aria-label="Legal">
+        <ul class="m-0 flex list-none flex-wrap gap-x-(--space-24) p-0">
+          <li>
+            <a class="footer-link" href="/politica-de-privacidad">Política de privacidad</a>
+          </li>
+          <li>
+            <a class="footer-link" href="/terminos-del-servicio">Términos del servicio</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <p
+      class="m-0 border-t border-(--color-border-on-dark) py-(--space-16) text-(length:--text-note) text-(--color-text-on-dark-subtle)"
+    >
+      © {year}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-min);
+    color: var(--color-text-on-dark-muted);
+    font-size: var(--text-body-sm);
+    text-decoration: none;
+    transition: color var(--duration-150);
+  }
+  .footer-link:hover {
+    color: var(--color-text-on-dark);
+    text-decoration: underline;
+    text-underline-offset: var(--space-4);
+  }
+</style>

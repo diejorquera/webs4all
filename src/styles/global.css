@@ -1,0 +1,270 @@
+@import "tailwindcss";
+@import "@fontsource-variable/plus-jakarta-sans/wght.css";
+
+/*
+ * Alias de fuente: el paquete registra la familia como 'Plus Jakarta Sans Variable',
+ * pero el token --font-sans usa 'Plus Jakarta Sans'. Este alias evita tocar el token.
+ */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  src: url('@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  src: url('@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* ───── Tokens (copiados sin cambios de design-references/tokens/webs4all-tokens.css) ───── */
+:root {
+  /* Color — fondos y superficies */
+  --color-navy-900: #0A1628;          /* fondo hero, barra de navegación, Sobre mí, 404 (inicio del degradado) */
+  --color-navy-800: #0D2137;          /* fin del degradado hero / Sobre mí / 404 */
+  --color-navy-node: #0C1C31;         /* relleno de nodos de la línea de tiempo */
+  --color-surface-warm: #F8F7F4;      /* Servicios, Contacto, páginas legales, Mensaje recibido */
+  --color-surface-white: #FFFFFF;     /* Trabajos, tarjetas de precio, campos */
+  --color-surface-lilac: #F3F0F6;     /* fondo de Precios */
+  --color-surface-lilac-bar: #F4F2F6; /* barra de navegador en miniaturas */
+  --color-surface-lilac-block: #EEEBF1; /* bloques de las miniaturas */
+  --color-paper: #E0DEDA;             /* hover del botón claro del CTA */
+  --color-ink: #121212;               /* texto principal, bordes fuertes, botón oscuro, pie */
+  --color-violet-700: #3D2887;        /* inicio degradado CTA, Mantención y SEO, banda de frases */
+  --color-violet-900: #1E1D2C;        /* fin degradado CTA; texto del botón claro */
+
+  /* Color — texto */
+  --color-text-primary: #121212;
+  --color-text-secondary: #393939;
+  --color-text-tertiary: #545454;
+  --color-text-on-dark: #FFFFFF;
+  --color-text-on-dark-muted: rgba(255, 255, 255, 0.85);
+  --color-text-on-dark-subtle: rgba(255, 255, 255, 0.72);
+
+  /* Color — bordes */
+  --color-border-strong: #121212;
+  --color-border-input: #8F8C86;
+  --color-border-warm: #D6D4CF;
+  --color-border-lilac: #CFCAD6;
+  --color-border-lilac-soft: #E4E1E8;
+  --color-border-lilac-mid: #D9D5DE;
+  --color-border-on-dark: rgba(255, 255, 255, 0.2);
+
+  /* Color — acentos */
+  --color-blue-600: #1976D2;          /* inicio degradado botón principal */
+  --color-blue-800: #0D47A1;          /* fin degradado botón principal */
+  --color-blue-500: #1E88E5;          /* halo del cursor (rgba 30,136,229) */
+  --color-blue-300: #64B5F6;          /* hover nav, cero del 404, paso 05 */
+  --color-blue-100: #BBDEFB;          /* hover de enlaces sobre azul marino */
+  --color-purple-500: #8830A1;        /* halo del CTA, anillo de selección del nav */
+  --color-orange-400: #F0A639;        /* halo del CTA, anillo de selección del nav */
+  --color-lilac-200: #C9B8F5;         /* números de pasos en Mantención y SEO */
+  --color-lilac-100: #E9E2FF;         /* bloque "Cómo se cobra" */
+
+  /* Color — estados */
+  --color-error: #B3261E;
+  --color-error-strong: #8C1D18;
+  --color-error-surface: #FDF1F0;
+  /* éxito: no definido (la confirmación usa --color-ink) */
+  /* desactivado: no definido */
+
+  /* Degradados */
+  --gradient-navy: linear-gradient(160deg, #0A1628 0%, #0D2137 100%);
+  --gradient-violet: linear-gradient(120deg, #3D2887 0%, #1E1D2C 100%);
+  --gradient-button-blue: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+  --gradient-ring-nav: linear-gradient(100deg, #8830A1 0%, #F0A639 50%, #8830A1 100%);
+
+  /* Tipografía */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --text-display-hero: clamp(32px, 6vw, 90px);
+  --text-display-404: clamp(112px, 24cqw, 240px);
+  --text-h1-reading: clamp(34px, 4.4cqw, 60px);
+  --text-h2-section: clamp(32px, 4vw, 56px);
+  --text-h3-section: clamp(28px, 3.4cqw, 48px);
+  --text-h3-card: clamp(22px, 2.4vw, 34px);
+  --text-h2-reading: clamp(21px, 1.9cqw, 26px);
+  --text-price: clamp(40px, 3.9cqw, 56px);
+  --text-number-step: clamp(44px, 4.4cqw, 64px);
+  --text-lead: clamp(16px, 1.3vw, 19px);
+  --text-body-lg: 17px;
+  --text-body: 16px;
+  --text-body-sm: 15px;
+  --text-note: 14px;
+  --text-label: 13px;
+  --text-label-xs: 11px;
+  --leading-none: 1;
+  --leading-tight: 1.02;
+  --leading-snug: 1.35;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.55;
+  --leading-loose: 1.6;
+  --leading-reading: 1.7;
+  --tracking-display: -0.04em;
+  --tracking-heading: -0.035em;
+  --tracking-subheading: -0.02em;
+  --tracking-label: 0.1em;
+  --tracking-label-xs: 0.08em;
+  --tracking-marquee: 0.06em;
+
+  /* Espaciado */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-56: 56px;
+  --space-64: 64px;
+  --space-section-y: clamp(64px, 8vw, 120px);
+  --space-gutter-x: clamp(20px, 4.5vw, 64px);
+  --container-max: 1440px;
+  --reading-max: 680px;
+  --nav-height: 80px;              /* 16px de margen superior + 64px de barra */
+  --scroll-offset: 96px;
+
+  /* Forma */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-tag: 6px;
+  --radius-md: 8px;
+  --radius-thumb: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 50%;
+  --border-width: 1px;
+  --border-width-strong: 2px;
+
+  /* Sombras */
+  --shadow-card-hover: 0 6px 20px rgba(30, 29, 44, 0.08);
+  --shadow-thumb-hover: 0 8px 22px rgba(30, 29, 44, 0.1);
+  --shadow-glow-blue: 0 0 14px rgba(100, 181, 246, 0.45);
+  --shadow-ring-selected: 0 0 0 2px #121212;
+  --shadow-input-focus: 0 0 0 1px #121212;
+  --shadow-input-error: 0 0 0 1px #B3261E;
+
+  /* Movimiento */
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-250: 250ms;
+  --duration-350: 350ms;
+  --duration-400: 400ms;
+  --duration-450: 450ms;
+  --duration-600: 600ms;
+  --duration-700: 700ms;
+  --duration-ring: 1100ms;
+  --duration-rotate-cycle: 9s;
+  --duration-marquee: 32s;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-rotate: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-linear: linear;
+
+  /* Foco */
+  --focus-ring: 2px solid currentColor;
+  --focus-offset: 3px;
+  --target-min: 44px;
+}
+
+/*
+ * Tailwind: expone los tokens como utilidades.
+ * `inline` hace que las utilidades usen var(--token) directamente
+ * (sin esto, --color-navy-900: var(--color-navy-900) sería una referencia circular).
+ */
+@theme inline {
+  --color-navy-900: var(--color-navy-900);
+  --color-navy-800: var(--color-navy-800);
+  --color-navy-node: var(--color-navy-node);
+
+  --color-ink: var(--color-ink);
+
+  --color-violet-700: var(--color-violet-700);
+  --color-violet-900: var(--color-violet-900);
+
+  --color-blue-600: var(--color-blue-600);
+  --color-blue-800: var(--color-blue-800);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-300: var(--color-blue-300);
+  --color-blue-100: var(--color-blue-100);
+
+  --color-lilac-200: var(--color-lilac-200);
+  --color-lilac-100: var(--color-lilac-100);
+
+  --color-surface-warm: var(--color-surface-warm);
+  --color-surface-white: var(--color-surface-white);
+  --color-surface-lilac: var(--color-surface-lilac);
+  --color-surface-lilac-bar: var(--color-surface-lilac-bar);
+  --color-surface-lilac-block: var(--color-surface-lilac-block);
+
+  --font-sans: var(--font-sans);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-tag: var(--radius-tag);
+  --radius-md: var(--radius-md);
+  --radius-thumb: var(--radius-thumb);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+}
+
+/* Degradados como utilidades (Tailwind no tiene namespace de tema para ellos) */
+@utility bg-gradient-navy {
+  background-image: var(--gradient-navy);
+}
+@utility bg-gradient-violet {
+  background-image: var(--gradient-violet);
+}
+@utility bg-gradient-button-blue {
+  background-image: var(--gradient-button-blue);
+}
+@utility bg-gradient-ring-nav {
+  background-image: var(--gradient-ring-nav);
+}
+
+/* ───── Reset mínimo ───── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--scroll-offset);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

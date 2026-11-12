@@ -1,0 +1,169 @@
+---
+import Logo from '../../assets/logos/webs4all-20.svg';
+import MobileMenu from '../islands/MobileMenu';
+import type { site as SiteConfig } from '../../config/site';
+
+interface Props {
+  site: typeof SiteConfig;
+  /** '' en la home (anclas locales), '/' en otras páginas (/#servicios, ...) */
+  hrefPrefix?: string;
+}
+const { hrefPrefix = '' } = Astro.props;
+
+const links = [
+  { id: 'servicios', label: 'Servicios' },
+  { id: 'trabajos', label: 'Trabajos' },
+  { id: 'precios', label: 'Precios' },
+  { id: 'sobre-mi', label: 'Sobre mí' },
+].map((l) => ({ ...l, href: `${hrefPrefix}#${l.id}` }));
+const contactHref = `${hrefPrefix}#contacto`;
+---
+
+<header class="sticky top-0 z-100 w-full bg-navy-900 pt-(--space-16)" data-navbar>
+  <div
+    class="mx-auto flex h-(--space-64) w-full max-w-(--container-max) items-center gap-(--space-16) px-(--space-gutter-x)"
+  >
+    <div class="flex flex-1 basis-0 items-center">
+      <a
+        href="/"
+        aria-label="webs4all.cl, inicio"
+        class="flex min-h-(--target-min) items-center text-(--color-text-on-dark) transition-opacity duration-(--duration-150) hover:opacity-80"
+      >
+        <Logo stroke="currentColor" aria-hidden="true" class="block h-[26px] w-auto" />
+      </a>
+    </div>
+
+    <nav aria-label="Principal" class="nav-desktop flex items-center gap-(--space-16) max-[900px]:hidden">
+      {
+        links.map((l) => (
+          <a href={l.href} data-nav={l.id} class="nav-link">
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex flex-1 basis-0 items-center justify-end gap-(--space-8)">
+      <a href={contactHref} class="btn-contact">Escríbeme</a>
+      <MobileMenu client:idle links={links} contactHref={contactHref} />
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--target-min);
+    padding: 0 var(--space-16);
+    border: var(--border-width) solid var(--color-border-on-dark);
+    border-radius: var(--radius-md);
+    color: var(--color-text-on-dark);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      border-color var(--duration-200),
+      box-shadow var(--duration-200);
+  }
+
+  /* Brillo solo con puntero real y pantalla ancha */
+  @media (hover: hover) and (min-width: 901px) {
+    .nav-link:not([aria-current='true']):hover {
+      border-color: var(--color-blue-300);
+      box-shadow: var(--shadow-glow-blue);
+    }
+  }
+
+  /* Seleccionado: anillo con degradado que se anima una sola vez */
+  .nav-link[aria-current='true'] {
+    border-color: transparent;
+    font-weight: var(--font-weight-bold);
+  }
+  .nav-link[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--border-width) * -1);
+    padding: var(--border-width-strong);
+    border-radius: var(--radius-md);
+    background-image: var(--gradient-ring-nav);
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    pointer-events: none;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    animation: nav-ring var(--duration-ring) var(--ease-out) 1 both;
+  }
+  @keyframes nav-ring {
+    from {
+      background-position: 100% 50%;
+    }
+    to {
+      background-position: 0% 50%;
+    }
+  }
+
+  .btn-contact {
+    display: flex;
+    align-items: center;
+    min-height: var(--target-min);
+    padding: 0 var(--space-24);
+    border-radius: var(--radius-md);
+    background-image: var(--gradient-button-blue);
+    color: var(--color-text-on-dark);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    transition:
+      background-color var(--duration-200),
+      color var(--duration-200);
+  }
+  .btn-contact:hover {
+    background-image: none;
+    background-color: var(--color-surface-white);
+    color: var(--color-navy-900);
+  }
+</style>
+
+<script>
+  // Resalta el enlace de la sección visible. Sin dependencias.
+  const desktopLinks = document.querySelectorAll<HTMLAnchorElement>('[data-navbar] a[data-nav]');
+  const sections = Array.from(desktopLinks)
+    .map((a) => document.getElementById(a.dataset.nav!))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length && 'IntersectionObserver' in window) {
+    const visible = new Set<string>();
+
+    const setCurrent = (id: string | null) => {
+      desktopLinks.forEach((a) => {
+        if (a.dataset.nav === id) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+      if (id) document.documentElement.dataset.navCurrent = id;
+      else delete document.documentElement.dataset.navCurrent;
+      // El menú móvil (React) escucha este evento
+      window.dispatchEvent(new CustomEvent('navcurrent', { detail: id }));
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        }
+        const current = sections.find((s) => visible.has(s.id));
+        setCurrent(current ? current.id : null);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>
