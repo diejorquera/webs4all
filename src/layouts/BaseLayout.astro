@@ -5,34 +5,79 @@ import SiteFooter from '../components/layout/SiteFooter.astro';
 import { site } from '../config/site';
 
 interface Props {
+  /** <title> completo. Por defecto, el de la landing (guía de estilo, sección 12). */
   title?: string;
+  /** meta description. Por defecto, la de la landing. */
   description?: string;
+  /** Imagen para redes (ruta desde la raíz o URL absoluta). Por defecto /og.png. */
+  image?: string;
   /** Agrega <meta name="robots" content="noindex, ..."> */
   noindex?: boolean;
   /** Con noindex: usa "nofollow" en vez de "follow" */
   nofollow?: boolean;
 }
-const { title = 'webs4all', description, noindex = false, nofollow = false } = Astro.props;
 
-// URL canónica con barra final (coincide con la salida estática /ruta/index.html)
+// Valores de la landing, tal como los define la guía de estilo (sección 12, tabla "Páginas").
+const DEFAULT_TITLE = 'Webs4all · Páginas web para pymes y emprendedores en Chile';
+const DEFAULT_DESCRIPTION =
+  'Soy Diego, diseñador web para pymes y emprendedores en Chile. Me cuentas de tu negocio y yo me encargo del diseño, los textos y la publicación.';
+
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  image = '/og.png',
+  noindex = false,
+  nofollow = false,
+} = Astro.props;
+
+// URL canónica absoluta, con barra final (coincide con la salida estática /ruta/index.html)
 let canonicalPath = Astro.url.pathname;
 if (!canonicalPath.endsWith('/') && !/\.\w+$/.test(canonicalPath)) canonicalPath += '/';
 const canonical = Astro.site ? new URL(canonicalPath, Astro.site).href : undefined;
+
+// Imagen para redes: URL absoluta
+const imageUrl = Astro.site ? new URL(image, Astro.site).href : image;
 
 // En la home las anclas son locales (#servicios); en otras páginas, /#servicios
 const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es-CL">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content={`noindex, ${nofollow ? 'nofollow' : 'follow'}`} />}
+    <meta name="theme-color" content="#0A1628" />
+
+    <!-- Favicon (PROVISIONAL: la guía de estilo lo marca "no definido") -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="webs4all.cl" />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <!-- Para datos estructurados u otros elementos de <head> propios de cada página -->
+    <slot name="head" />
   </head>
   <body>
     <a

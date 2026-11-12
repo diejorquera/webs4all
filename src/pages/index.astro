@@ -7,9 +7,54 @@ import Works from '../components/sections/Works.astro';
 import Pricing from '../components/sections/Pricing.astro';
 import About from '../components/sections/About.astro';
 import Contact from '../components/sections/Contact.astro';
+import { site as siteConfig } from '../config/site';
+import { faq } from '../config/faq';
+
+// Datos estructurados: SOLO datos que existen en site.ts (nombre, ciudad, email, LinkedIn)
+// y las preguntas frecuentes visibles en la sección Contacto (mismo texto, misma fuente).
+// No se incluyen teléfono, dirección postal, horarios, valoraciones ni precios.
+const origin = (Astro.site ?? new URL('https://webs4all.cl')).origin;
+const businessId = `${origin}/#negocio`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${origin}/#sitio`,
+      url: `${origin}/`,
+      name: 'webs4all.cl',
+      inLanguage: 'es-CL',
+      publisher: { '@id': businessId },
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': businessId,
+      url: `${origin}/`,
+      name: 'webs4all.cl',
+      email: siteConfig.email,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: siteConfig.ciudad,
+        addressCountry: 'CL',
+      },
+      sameAs: [siteConfig.linkedin],
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${origin}/#preguntas-frecuentes`,
+      mainEntity: faq.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    },
+  ],
+};
 ---
 
-<BaseLayout title="webs4all">
+<BaseLayout>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <Hero />
   <Services />
   <CtaBand />

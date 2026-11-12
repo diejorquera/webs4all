@@ -14,8 +14,13 @@ export default defineConfig({
 
   integrations: [
     react(),
-    // Las páginas con noindex no van en el sitemap
-    sitemap({ filter: (page) => !page.includes('/gracias') && !page.includes('/404') }),
+    // Las páginas con noindex no van en el sitemap.
+    // TODO: quitar '/politica-de-privacidad' de esta lista cuando la página tenga su contenido
+    // real y se le quite el noindex (hoy es un marcador).
+    sitemap({
+      filter: (page) =>
+        !['/gracias', '/404', '/politica-de-privacidad'].some((excluded) => page.includes(excluded)),
+    }),
   ],
 
   vite: {
