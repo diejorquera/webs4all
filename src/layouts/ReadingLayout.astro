@@ -1,12 +1,392 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { buildWhatsappUrl } from '../lib/whatsapp';
+
+interface TocItem {
+  /** id del h2 de la cláusula (slug) */
+  id: string;
+  title: string;
+}
 
 interface Props {
-  title?: string;
+  /** Texto del h1. El <title> queda "<title> · Webs4all". */
+  title: string;
+  description: string;
+  /** Texto de la fecha tal como aparece: "Última actualización: <updated>" */
+  updated: string;
+  /** Tabla de contenidos ("En esta página"); los h2 del contenido deben usar estos ids */
+  toc?: TocItem[];
+  noindex?: boolean;
 }
-const { title } = Astro.props;
+
+const { title, description, updated, toc = [], noindex = false } = Astro.props;
+const whatsappHref = buildWhatsappUrl();
+const num = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
-<BaseLayout title={title}>
-  <slot />
+<BaseLayout title={`${title} · Webs4all`} description={description} noindex={noindex}>
+  <div class="pv">
+    <div class="pv-wrap">
+      <nav class="pv-crumbs" aria-label="Migas de pan">
+        <ol>
+          <li><a href="/">Inicio</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page">{title}</li>
+        </ol>
+      </nav>
+
+      <header class="pv-head">
+        <h1>{title}</h1>
+        <p class="pv-date">Última actualización: {updated}</p>
+      </header>
+
+      <div class="pv-grid">
+        {
+          toc.length > 0 && (
+            <aside class="pv-toc" aria-labelledby="pv-toc-t">
+              <h2 id="pv-toc-t">En esta página</h2>
+              <ol>
+                {toc.map((t, i) => (
+                  <li>
+                    <a href={`#${t.id}`}>
+                      <span class="pv-tn">{num(i)}</span>
+                      <span>{t.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          )
+        }
+
+        <article class="pv-body">
+          {
+            toc.length > 0 && (
+              <details class="pv-tocm">
+                <summary>En esta página</summary>
+                <ol>
+                  {toc.map((t, i) => (
+                    <li>
+                      <a href={`#${t.id}`}>
+                        <span class="pv-tn">{num(i)}</span>
+                        <span>{t.title}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            )
+          }
+
+          <slot />
+
+          <div class="pv-end">
+            <a class="pv-back" href="/">
+              <svg
+                aria-hidden="true"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M13 8H3M7 4L3 8l4 4"></path>
+              </svg>
+              <span>Volver al inicio</span>
+            </a>
+            <a class="pv-btn" href={whatsappHref} target="_blank" rel="noopener noreferrer">
+              Escríbeme por WhatsApp
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
 </BaseLayout>
+
+<style is:global>
+  .pv {
+    container-type: inline-size;
+    background: var(--color-surface-warm);
+    color: var(--color-text-primary);
+  }
+  .pv a {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .pv a:hover {
+    text-decoration-thickness: 2px;
+  }
+  .pv a:focus-visible,
+  .pv summary:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: var(--radius-tag);
+  }
+  .pv-wrap {
+    width: 100%;
+    /* medida del artboard sin token equivalente */
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: clamp(40px, 5cqw, 72px) clamp(20px, 4.5cqw, 64px) clamp(72px, 8cqw, 120px);
+  }
+
+  /* Migas de pan */
+  .pv-crumbs {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .pv-crumbs ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-10);
+    font-size: var(--text-note);
+    color: var(--color-text-tertiary);
+  }
+  .pv-crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-min);
+    color: var(--color-text-tertiary);
+  }
+  .pv-crumbs a:hover {
+    color: var(--color-text-primary);
+  }
+  .pv-crumbs [aria-current='page'] {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Cabecera */
+  .pv-head {
+    max-width: 720px;
+    margin: var(--space-8) auto 0;
+    padding-bottom: var(--space-32);
+    border-bottom: var(--border-width) solid var(--color-border-strong);
+  }
+  .pv-head h1 {
+    margin: 0;
+    font-size: var(--text-h1-reading);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-text-primary);
+  }
+  .pv-date {
+    margin: var(--space-16) 0 0;
+    font-size: var(--text-note);
+    color: var(--color-text-tertiary);
+  }
+
+  /* Rejilla: índice + columna de lectura */
+  .pv-grid {
+    display: grid;
+    grid-template-columns: 220px minmax(0, var(--reading-max));
+    justify-content: center;
+    gap: clamp(40px, 6cqw, 88px);
+    margin-top: var(--space-48);
+    align-items: start;
+  }
+  .pv-toc {
+    position: sticky;
+    top: 104px;
+  }
+  .pv-toc h2,
+  .pv-tocm summary {
+    margin: 0 0 var(--space-12);
+    font-size: var(--text-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+  .pv-toc ol,
+  .pv-tocm ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .pv-toc a,
+  .pv-tocm a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-10);
+    min-height: 40px;
+    padding: 6px 0;
+    box-sizing: border-box;
+    font-size: var(--text-note);
+    line-height: var(--leading-snug);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+  .pv-toc a:hover,
+  .pv-tocm a:hover {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+  }
+  .pv-tn {
+    /* medida del artboard sin token equivalente */
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .pv-tocm {
+    display: none;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    padding: 0 var(--space-16);
+    margin-bottom: var(--space-32);
+  }
+  .pv-tocm summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+    margin: 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .pv-tocm summary::-webkit-details-marker {
+    display: none;
+  }
+  .pv-tocm summary::after {
+    content: '+';
+    font-size: 20px;
+    font-weight: var(--font-weight-medium);
+  }
+  .pv-tocm[open] summary::after {
+    content: '−';
+  }
+  .pv-tocm ol {
+    padding-bottom: var(--space-12);
+  }
+
+  /* Texto: HTML semántico (h2, p, ul) con estilos por contexto */
+  .pv-body {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-reading);
+    color: var(--color-text-secondary);
+  }
+  .pv-body .pv-intro {
+    margin: 0 0 var(--space-8);
+    font-size: clamp(18px, 1.5cqw, 20px);
+    line-height: var(--leading-loose);
+    color: var(--color-text-primary);
+  }
+  .pv-body section {
+    padding-top: var(--space-40);
+  }
+  .pv-body section h2 {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-14);
+    margin: 0 0 var(--space-14);
+    font-size: var(--text-h2-reading);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.2;
+    letter-spacing: var(--tracking-subheading);
+    color: var(--color-text-primary);
+    scroll-margin-top: 104px;
+  }
+  .pv-num {
+    font-size: 0.7em;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .pv-body section p {
+    margin: 0 0 var(--space-14);
+  }
+  .pv-body section ul {
+    margin: 0 0 var(--space-14);
+    padding-left: 22px;
+  }
+  .pv-body section li {
+    margin: 0 0 var(--space-10);
+    padding-left: var(--space-4);
+  }
+  .pv-body section li::marker {
+    color: var(--color-text-primary);
+  }
+
+  /* Cierre */
+  .pv-end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16) var(--space-24);
+    margin-top: var(--space-56);
+    padding-top: var(--space-28);
+    border-top: var(--border-width) solid var(--color-border-strong);
+  }
+  .pv-back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    min-height: var(--target-min);
+    font-weight: var(--font-weight-semibold);
+  }
+  .pv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    box-sizing: border-box;
+    padding: 0 var(--space-24);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    transition:
+      background-color var(--duration-200),
+      color var(--duration-200);
+  }
+  .pv a.pv-btn:hover {
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+  }
+
+  @container (max-width: 959px) {
+    .pv-grid {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: var(--space-32);
+    }
+    .pv-toc {
+      display: none;
+    }
+    .pv-tocm {
+      display: block;
+    }
+    .pv-head {
+      max-width: none;
+    }
+  }
+  @container (max-width: 599px) {
+    .pv-end {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .pv-btn {
+      width: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pv-btn {
+      transition: none;
+    }
+  }
+</style>

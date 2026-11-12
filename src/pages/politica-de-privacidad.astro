@@ -1,7 +1,30 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import ReadingLayout from '../layouts/ReadingLayout.astro';
+
+/*
+ * TODO (bloqueante antes de publicar): falta el artboard `Privacidad.dc.html`.
+ * No existe en design-references/, y la guía de estilo solo indica de esta página:
+ *   - título:       "Política de privacidad · Webs4all"
+ *   - descripción:  "Esta política explica qué datos personales recojo cuando usas webs4all.cl,
+ *                    para qué los uso y cuáles son tus derechos."
+ *   - pendientes:   proveedores, plazo de conservación y la sección 8 de cookies.
+ * No se inventan cláusulas legales: pegar aquí el contenido real (h2 con id + p/ul) y pasar la
+ * lista `toc` a ReadingLayout (como en terminos-del-servicio.astro).
+ * Cuando haya contenido, quitar `noindex` (la guía de estilo marca esta página como indexable).
+ */
 ---
 
-<BaseLayout title="Política de privacidad">
-  <h1>Política de privacidad</h1>
-</BaseLayout>
+<ReadingLayout
+  title="Política de privacidad"
+  description="Esta política explica qué datos personales recojo cuando usas webs4all.cl, para qué los uso y cuáles son tus derechos."
+  updated="[PENDIENTE: fecha]"
+  noindex
+>
+  <section aria-labelledby="contenido-pendiente">
+    <h2 id="contenido-pendiente">[PENDIENTE: contenido de la política de privacidad]</h2>
+    <p>
+      [PENDIENTE: falta el artboard Privacidad.dc.html. Este texto se reemplaza por las cláusulas
+      reales, incluyendo proveedores, plazo de conservación y la sección 8 de cookies.]
+    </p>
+  </section>
+</ReadingLayout>

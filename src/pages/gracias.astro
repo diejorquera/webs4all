@@ -1,7 +1,242 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import { buildWhatsappUrl } from '../lib/whatsapp';
+
+// Textos del artboard Gracias.dc.html, sin cambios.
+// Es la ruta a la que ContactForm redirige tras un envío correcto (window.location.assign('/gracias')).
+// Es una página estática: si alguien entra directo, se ve igual y sin errores.
+const steps = [
+  'Reviso lo que me cuentas.',
+  'Te escribo para conversar media hora por llamada o WhatsApp.',
+  'Te envío una propuesta escrita con el alcance, el plazo y el precio.',
+];
+const whatsappHref = buildWhatsappUrl();
 ---
 
-<BaseLayout title="Gracias">
-  <h1>Gracias</h1>
+<BaseLayout
+  title="Mensaje recibido · Webs4all"
+  description="Te escribo dentro de 24 horas hábiles, por el medio que me dejaste."
+  noindex
+  nofollow
+>
+  <section class="gr relative isolate overflow-hidden bg-surface-warm text-ink">
+    <!-- Grano (multiply, como en el artboard) -->
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      class="pointer-events-none absolute inset-0 z-2 h-full w-full opacity-40 mix-blend-multiply"
+    >
+      <filter id="grain-gracias" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+        ></feTurbulence>
+        <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#grain-gracias)"></rect>
+    </svg>
+
+    <div class="g-wrap">
+      <svg
+        class="g-check"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 96 96"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle class="g-ring" cx="48" cy="48" r="44" stroke-width="3"></circle>
+        <path class="g-tick" d="M29 49.5l12.5 12.5L67 36.5" stroke-width="5"></path>
+      </svg>
+
+      <h1 class="g-h1">¡Recibido, gracias!</h1>
+      <p class="g-p">Te escribo dentro de 24 horas hábiles, por el medio que me dejaste.</p>
+
+      <div class="g-next">
+        <h2 class="g-h2">Qué viene ahora</h2>
+        <ol class="g-steps">
+          {
+            steps.map((text, i) => (
+              <li>
+                <span class="g-n" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span>{text}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="g-btns">
+        <Button href="/" variant="dark">Volver al inicio</Button>
+        <Button
+          href="/#precios"
+          variant="secondary"
+          class="[--btn-hover-bg:var(--color-ink)] [--btn-hover-fg:var(--color-text-on-dark)]"
+        >
+          Ver precios
+        </Button>
+      </div>
+
+      <p class="g-small">
+        ¿Es urgente? <a href={whatsappHref} target="_blank" rel="noopener noreferrer"
+          >Escríbeme por WhatsApp</a
+        >
+      </p>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .gr {
+    container-type: inline-size;
+    min-height: 100vh;
+    min-height: calc(100svh - var(--nav-height));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .g-wrap {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: var(--reading-max);
+    box-sizing: border-box;
+    padding: clamp(56px, 8cqw, 112px) var(--space-gutter-x);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .g-check {
+    width: 88px;
+    height: 88px;
+    color: var(--color-ink);
+  }
+  .g-ring {
+    stroke-dasharray: 277;
+    stroke-dashoffset: 0;
+    transform-origin: 48px 48px;
+    transform: rotate(-90deg);
+    animation: gRing 0.7s var(--ease-out) both;
+  }
+  .g-tick {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 0;
+    animation: gTick 0.45s var(--ease-out) 0.55s both;
+  }
+  @keyframes gRing {
+    from {
+      stroke-dashoffset: 277;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes gTick {
+    from {
+      stroke-dashoffset: 60;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .g-h1 {
+    margin: var(--space-28) 0 0;
+    /* medida del artboard sin token equivalente */
+    font-size: clamp(32px, 4.4cqw, 56px);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .g-p {
+    margin: var(--space-16) 0 0;
+    max-width: 480px;
+    font-size: clamp(17px, 1.5cqw, 20px);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+  .g-next {
+    align-self: stretch;
+    margin-top: clamp(40px, 5cqw, 56px);
+    text-align: left;
+  }
+  .g-h2 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .g-steps {
+    list-style: none;
+    margin: var(--space-12) 0 0;
+    padding: 0;
+    border-bottom: var(--border-width) solid var(--color-border-strong);
+  }
+  .g-steps li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-20);
+    padding: 18px 0;
+    border-top: var(--border-width) solid var(--color-border-strong);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .g-n {
+    flex: 0 0 var(--space-56);
+    font-size: 36px;
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-text-tertiary);
+  }
+  .g-btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-12);
+    margin-top: var(--space-40);
+  }
+  .g-small {
+    margin: var(--space-24) 0 0;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-text-tertiary);
+  }
+  .g-small a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-min);
+    color: var(--color-ink);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: var(--space-4);
+  }
+  @container (max-width: 599px) {
+    .g-btns {
+      flex-direction: column;
+      align-self: stretch;
+    }
+    .g-btns :global(.btn) {
+      width: 100%;
+    }
+    .g-n {
+      flex-basis: var(--target-min);
+      font-size: 30px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .g-ring,
+    .g-tick {
+      animation: none;
+    }
+  }
+</style>

@@ -1,7 +1,181 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import CursorHalo from '../components/islands/CursorHalo';
+import { buildWhatsappUrl } from '../lib/whatsapp';
+
+// Textos del artboard Error404.dc.html, sin cambios.
+const whatsappHref = buildWhatsappUrl('Hola Diego, llegué a una página que no existe…');
 ---
 
-<BaseLayout title="404">
-  <h1>404</h1>
+<BaseLayout
+  title="Página no encontrada · Webs4all"
+  description="Puede que el enlace esté mal escrito o que la página ya no esté."
+  noindex
+>
+  <section class="e404 relative isolate overflow-hidden bg-gradient-navy text-(--color-text-on-dark)">
+    <!-- Mismo halo del Hero (solo escritorio) -->
+    <CursorHalo client:media="(min-width: 901px)" />
+
+    <!-- Grano -->
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      class="pointer-events-none absolute inset-0 z-2 h-full w-full opacity-35 mix-blend-overlay"
+    >
+      <filter id="grain-404" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+        ></feTurbulence>
+        <feColorMatrix type="saturate" values="0"></feColorMatrix>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#grain-404)"></rect>
+    </svg>
+
+    <div class="e-wrap">
+      <!-- "404" gigante: decorativo (el h1 de abajo es el texto real) -->
+      <p class="e-num" aria-hidden="true">
+        <span>4</span>
+        <svg
+          class="e-zero"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 240 240"
+          fill="none"
+          stroke="currentColor"
+        >
+          <circle cx="120" cy="120" r="102" stroke-width="34"></circle>
+          <path
+            transform="translate(124.25 112) scale(0.62) translate(-32.5 -100) skewX(-30)"
+            d="M10 50L38 150L66 70L94 150L142 50V150M110 115H180"
+            stroke-width="26"
+            stroke-linejoin="miter"></path>
+        </svg>
+        <span>4</span>
+      </p>
+
+      <h1 class="e-h1">Esta página no existe</h1>
+      <p class="e-p">
+        Puede que el enlace esté mal escrito o que la página ya no esté. Vuelve al inicio o
+        escríbeme y te ayudo a encontrar lo que buscabas.
+      </p>
+
+      <div class="e-btns">
+        <Button href="/" variant="primary">Volver al inicio</Button>
+        <Button
+          href={whatsappHref}
+          variant="secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Escríbeme por WhatsApp
+        </Button>
+      </div>
+
+      <p class="e-more">
+        Quizás buscabas: <a href="/#servicios">Servicios</a> · <a href="/#trabajos">Trabajos</a> ·
+        <a href="/#precios">Precios</a> · <a href="/#contacto">Contacto</a>
+      </p>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .e404 {
+    container-type: inline-size;
+    min-height: 100vh;
+    min-height: calc(100svh - var(--nav-height));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .e-wrap {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 760px;
+    box-sizing: border-box;
+    padding: clamp(56px, 8cqw, 112px) var(--space-gutter-x);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .e-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.04em;
+    margin: 0;
+    font-size: var(--text-display-404);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--color-text-on-dark);
+  }
+  .e-zero {
+    display: block;
+    width: 0.74em;
+    height: 0.74em;
+    margin: 0 0.02em;
+    color: var(--color-blue-300);
+    transition: transform var(--duration-600) var(--ease-out);
+  }
+  .e-num:hover .e-zero {
+    transform: rotate(-18deg);
+  }
+  .e-h1 {
+    margin: clamp(24px, 3cqw, 40px) 0 0;
+    /* medida del artboard sin token equivalente */
+    font-size: clamp(28px, 3.6cqw, 44px);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--color-text-on-dark);
+  }
+  .e-p {
+    margin: 18px 0 0;
+    max-width: 560px;
+    font-size: clamp(16px, 1.4cqw, 19px);
+    line-height: var(--leading-loose);
+    color: var(--color-text-on-dark-muted);
+  }
+  .e-btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-12);
+    margin-top: var(--space-32);
+  }
+  .e-more {
+    margin: var(--space-28) 0 0;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-loose);
+    color: var(--color-text-on-dark-muted);
+  }
+  .e-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-min);
+    padding: 0 2px;
+    color: var(--color-text-on-dark);
+    text-decoration: underline;
+    text-underline-offset: var(--space-4);
+  }
+  .e-more a:hover {
+    color: var(--color-blue-100);
+  }
+  @container (max-width: 599px) {
+    .e-btns {
+      flex-direction: column;
+      align-self: stretch;
+    }
+    .e-btns :global(.btn) {
+      width: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .e-zero {
+      transition: none;
+    }
+  }
+</style>

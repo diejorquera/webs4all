@@ -1,7 +1,189 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import ReadingLayout from '../layouts/ReadingLayout.astro';
+import { site } from '../config/site';
+import { buildWhatsappUrl } from '../lib/whatsapp';
+
+// Contenido del artboard Terminos.dc.html, sin cambios. Los textos que el artboard trae
+// entre corchetes quedan como [PENDIENTE: ...] (con el texto propuesto adentro).
+const toc = [
+  { id: 'presta', title: 'Quién presta el servicio' },
+  { id: 'servicios-ofrecidos', title: 'Qué servicios ofrezco' },
+  { id: 'propuesta', title: 'Propuesta y aceptación' },
+  { id: 'pagos', title: 'Precios y pagos' },
+  { id: 'plazos', title: 'Plazos' },
+  { id: 'revisiones', title: 'Revisiones' },
+  { id: 'mantencion-incluida', title: 'Mantención incluida' },
+  { id: 'por-horas', title: 'Mantención y SEO por horas' },
+  { id: 'propiedad', title: 'Propiedad del trabajo' },
+  { id: 'portafolio', title: 'Portafolio' },
+  { id: 'garantias', title: 'Qué no puedo garantizar' },
+  { id: 'cancelacion', title: 'Cancelación' },
+  { id: 'cambios', title: 'Cambios en estos términos' },
+  { id: 'ley', title: 'Ley aplicable y contacto' },
+];
+
+const mailto = `mailto:${site.email}`;
+const whatsappHref = buildWhatsappUrl();
 ---
 
-<BaseLayout title="Términos del servicio">
-  <h1>Términos del servicio</h1>
-</BaseLayout>
+<ReadingLayout
+  title="Términos del servicio"
+  description="Estas son las reglas con las que trabajo, escritas en simple para que ambos sepamos qué esperar antes de empezar."
+  updated="[PENDIENTE: fecha]"
+  toc={toc}
+>
+  <!-- TODO: completar la fecha de "Última actualización" (prop `updated` de arriba). -->
+  <p class="pv-intro">
+    Estas son las reglas con las que trabajo, escritas en simple para que ambos sepamos qué esperar
+    antes de empezar. Al aceptar una propuesta, aceptas estos términos.
+  </p>
+
+  <section aria-labelledby="presta">
+    <h2 id="presta"><span class="pv-num">01</span> Quién presta el servicio</h2>
+    <!-- TODO: completar el apellido. -->
+    <p>
+      Diego [PENDIENTE: apellido], persona natural que opera bajo el nombre Webs4all, con domicilio
+      en Talca, Chile. Contacto: <a href={mailto}>{site.email}</a>.
+    </p>
+  </section>
+
+  <section aria-labelledby="servicios-ofrecidos">
+    <h2 id="servicios-ofrecidos"><span class="pv-num">02</span> Qué servicios ofrezco</h2>
+    <p>
+      Páginas web (Web Express, Básico y Estándar), tiendas online en Shopify o WooCommerce,
+      mantención y SEO. El detalle de cada uno está en la sección de precios de la web y en tu
+      propuesta.
+    </p>
+  </section>
+
+  <section aria-labelledby="propuesta">
+    <h2 id="propuesta"><span class="pv-num">03</span> Propuesta y aceptación</h2>
+    <p>
+      Antes de empezar te envío una propuesta escrita con el alcance, el plazo y el precio. El
+      trabajo parte cuando la aceptas por correo o WhatsApp y realizas el primer pago.
+    </p>
+  </section>
+
+  <section aria-labelledby="pagos">
+    <h2 id="pagos"><span class="pv-num">04</span> Precios y pagos</h2>
+    <ul>
+      <li>
+        Los precios son finales y no incluyen IVA, porque trabajo con boleta de honorarios. Emito una
+        boleta por cada pago.
+      </li>
+      <li>
+        En los planes de páginas web pagas el 50% al empezar y el 50% antes de publicar. En la tienda
+        online, 40% al empezar, 30% al aprobar el diseño y 30% antes de publicar.
+      </li>
+      <li>El pago es por transferencia bancaria.</li>
+      <li>
+        Dominios, hosting, la suscripción de Shopify y las comisiones de las pasarelas de pago son
+        costos de terceros, van aparte y quedan a tu nombre.
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="plazos">
+    <h2 id="plazos"><span class="pv-num">05</span> Plazos</h2>
+    <p>
+      Los plazos de cada plan corren desde que me entregas tu logo, fotos, datos y demás material. Si
+      pasan 30 días sin que me entregues lo necesario, el proyecto queda en pausa y, al retomarlo, se
+      acuerda un nuevo plazo.
+    </p>
+  </section>
+
+  <section aria-labelledby="revisiones">
+    <h2 id="revisiones"><span class="pv-num">06</span> Revisiones</h2>
+    <p>
+      Los planes Básico, Estándar y Tienda incluyen 2 rondas de revisión; la Web Express, 1. Los
+      cambios que superen lo acordado en la propuesta, como secciones nuevas o un diseño distinto, se
+      cotizan aparte.
+    </p>
+  </section>
+
+  <section aria-labelledby="mantencion-incluida">
+    <h2 id="mantencion-incluida"><span class="pv-num">07</span> Mantención incluida</h2>
+    <p>
+      Los planes Básico, Estándar y Tienda incluyen 2 meses de mantención básica después de
+      publicar: cambios de textos e imágenes, equivalentes a 2 horas de trabajo en total. La Web
+      Express incluye 7 días para corregir errores.
+    </p>
+  </section>
+
+  <section aria-labelledby="por-horas">
+    <h2 id="por-horas"><span class="pv-num">08</span> Mantención y SEO por horas</h2>
+    <!-- TODO: confirmar la última frase de este párrafo (en el artboard va entre corchetes). -->
+    <p>
+      Cuando contratas mantención o SEO, el valor depende del tiempo que tome el trabajo. Te entrego
+      la cotización, con las horas estimadas y el valor total, enseguida y antes de empezar. Si me
+      demoro más de lo estimado, no se te cobra la diferencia. [PENDIENTE: Si durante el trabajo
+      pides algo adicional, lo cotizamos aparte antes de hacerlo.]
+    </p>
+  </section>
+
+  <section aria-labelledby="propiedad">
+    <h2 id="propiedad"><span class="pv-num">09</span> Propiedad del trabajo</h2>
+    <ul>
+      <li>
+        Una vez pagado el total, el sitio y su contenido son tuyos. El dominio y las cuentas quedan a
+        tu nombre desde el primer día.
+      </li>
+      <li>
+        Tú me aseguras que tienes los derechos sobre el logo, las fotos y los textos que me
+        entregues.
+      </li>
+      <!-- TODO: confirmar esta cláusula (en el artboard va entre corchetes). -->
+      <li>
+        [PENDIENTE: Las plantillas de la Web Express siguen siendo mías: puedes usar tu sitio, pero
+        no revender ni reutilizar la plantilla.]
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="portafolio">
+    <h2 id="portafolio"><span class="pv-num">10</span> Portafolio</h2>
+    <!-- TODO: confirmar esta cláusula (en el artboard va entre corchetes). -->
+    <p>
+      [PENDIENTE: Puedo mostrar el proyecto terminado en mi portafolio, salvo que me pidas por
+      escrito que no lo haga.]
+    </p>
+  </section>
+
+  <section aria-labelledby="garantias">
+    <h2 id="garantias"><span class="pv-num">11</span> Qué no puedo garantizar</h2>
+    <p>
+      No puedo garantizar posiciones en Google, cantidad de visitas ni ventas: dependen de factores
+      que no controlo. Tampoco me hago responsable por caídas de servicios de terceros, como el
+      hosting o las pasarelas de pago. Sí me comprometo a hacer mi trabajo con método y a mostrarte
+      lo que hago.
+    </p>
+  </section>
+
+  <section aria-labelledby="cancelacion">
+    <h2 id="cancelacion"><span class="pv-num">12</span> Cancelación</h2>
+    <!-- TODO: confirmar la segunda frase (en el artboard va entre corchetes). -->
+    <p>
+      Puedes cancelar un proyecto en cualquier momento avisándome por escrito. [PENDIENTE: El
+      anticipo cubre el trabajo ya realizado hasta ese momento; si lo realizado vale menos que lo
+      pagado, te devuelvo la diferencia.]
+    </p>
+  </section>
+
+  <section aria-labelledby="cambios">
+    <h2 id="cambios"><span class="pv-num">13</span> Cambios en estos términos</h2>
+    <p>
+      Si cambio estos términos, los nuevos aplicarán a las propuestas que aceptes desde esa fecha, y
+      actualizaré la fecha de arriba.
+    </p>
+  </section>
+
+  <section aria-labelledby="ley">
+    <h2 id="ley"><span class="pv-num">14</span> Ley aplicable y contacto</h2>
+    <p>
+      Estos términos se rigen por las leyes de Chile. Si tienes un problema, escríbeme primero a <a
+        href={mailto}>{site.email}</a
+      > o por <a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>: prefiero
+      resolverlo conversando.
+    </p>
+  </section>
+</ReadingLayout>

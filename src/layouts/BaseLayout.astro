@@ -7,8 +7,17 @@ import { site } from '../config/site';
 interface Props {
   title?: string;
   description?: string;
+  /** Agrega <meta name="robots" content="noindex, ..."> */
+  noindex?: boolean;
+  /** Con noindex: usa "nofollow" en vez de "follow" */
+  nofollow?: boolean;
 }
-const { title = 'webs4all', description } = Astro.props;
+const { title = 'webs4all', description, noindex = false, nofollow = false } = Astro.props;
+
+// URL canónica con barra final (coincide con la salida estática /ruta/index.html)
+let canonicalPath = Astro.url.pathname;
+if (!canonicalPath.endsWith('/') && !/\.\w+$/.test(canonicalPath)) canonicalPath += '/';
+const canonical = Astro.site ? new URL(canonicalPath, Astro.site).href : undefined;
 
 // En la home las anclas son locales (#servicios); en otras páginas, /#servicios
 const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
@@ -22,6 +31,8 @@ const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content={`noindex, ${nofollow ? 'nofollow' : 'follow'}`} />}
   </head>
   <body>
     <a
