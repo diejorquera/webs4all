@@ -1,1 +1,446 @@
-<section>Contact</section>
+---
+import ContactForm from '../islands/ContactForm';
+import FaqAccordion from '../islands/FaqAccordion';
+import { site } from '../../config/site';
+import { buildWhatsappUrl } from '../../lib/whatsapp';
+
+// Textos del artboard, sin cambios.
+const faq = [
+  {
+    q: '¿Cuánto vale una página web en Chile?',
+    a: 'Depende de lo que necesites. Conmigo, una Web Express vale $100.000, una one page $250.000, un sitio de seis páginas $480.000 y una tienda online $750.000. Son precios finales y sin IVA, porque trabajo con boleta de honorarios. La mantención y el SEO se cotizan según las horas de trabajo.',
+  },
+  {
+    q: '¿Qué necesito para empezar?',
+    a: 'Tu logo si tienes, fotos de tu negocio y media hora para conversar. Si no tienes logo ni fotos, partimos con lo que haya: puedo usar un logo tipográfico simple y fotos de banco de imágenes mientras tanto. Los textos los escribo yo en los planes Básico, Estándar y Tienda; en la Web Express los entregas tú.',
+  },
+  {
+    q: '¿De quién es la página? ¿Puedo editarla yo?',
+    a: 'Es tuya: el dominio y las cuentas quedan a tu nombre desde el primer día. En la tienda online administras tú los productos, los precios y los pedidos. En los planes Básico y Estándar los cambios los hago yo: me escribes y lo resuelvo, dentro de los 2 meses de mantención básica incluidos o con una cotización.',
+  },
+  {
+    q: '¿Qué pago aparte y cómo se paga?',
+    a: 'Aparte van el dominio (cerca de $10.000 al año) y, en las tiendas, la mensualidad de Shopify o el hosting y la comisión de la pasarela de pago. Todo lo demás está en el precio. Se paga por transferencia: la mitad al empezar y la mitad antes de publicar; en la tienda online, 40%, 30% y 30%. Emito boleta de honorarios por cada pago.',
+  },
+  {
+    q: '¿Cómo se cobran la mantención y el SEO?',
+    a: 'Según el tiempo que tome el trabajo. Me cuentas qué necesitas y te doy enseguida la cotización, con las horas estimadas y el valor total, antes de empezar. Si me demoro más de lo estimado, es problema mío y no se te cobra la diferencia.',
+  },
+];
+
+const whatsappHref = buildWhatsappUrl();
+---
+
+<section id="contacto" class="ct relative">
+  <!-- Grano (multiply, como en el artboard) -->
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    class="pointer-events-none absolute inset-0 z-20 h-full w-full opacity-40 mix-blend-multiply"
+  >
+    <filter id="grain-contacto" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+      ></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-contacto)"></rect>
+  </svg>
+
+  <div class="ct-wrap">
+    <!-- Izquierda: título y formulario -->
+    <div class="ct-left">
+      <div class="ct-head">
+        <h2 class="ct-h2">Hagamos tus ideas realidad</h2>
+        <p class="ct-lead">
+          Escríbeme por WhatsApp o déjame tus datos. Respondo en menos de 24 horas hábiles.
+        </p>
+      </div>
+
+      <ContactForm
+        client:visible
+        email={site.email}
+        whatsappHref={whatsappHref}
+        privacyHref="/politica-de-privacidad"
+      />
+    </div>
+
+    <!-- Derecha: preguntas frecuentes -->
+    <div id="preguntas" class="ct-right">
+      <h3 class="ct-h3">Preguntas frecuentes</h3>
+      <FaqAccordion client:visible items={faq} initialOpen={0} />
+    </div>
+  </div>
+</section>
+
+<!-- Sin JS: todas las respuestas se muestran abiertas -->
+<noscript>
+  <style>
+    .ct .ct-panel {
+      grid-template-rows: 1fr;
+    }
+    .ct .ct-clip {
+      visibility: visible;
+    }
+  </style>
+</noscript>
+
+<style is:global>
+  .ct {
+    container-type: inline-size;
+    background: var(--color-surface-warm);
+    color: var(--color-text-primary);
+  }
+  .ct-wrap {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(48px, 6cqw, 96px);
+    align-items: start;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: clamp(64px, 8cqw, 120px) clamp(20px, 4.5cqw, 64px);
+  }
+  .ct-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-32);
+  }
+  .ct-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+  .ct-h2 {
+    margin: 0;
+    font-size: var(--text-h2-section);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+    text-transform: uppercase;
+  }
+  .ct-lead {
+    margin: 0;
+    max-width: 520px;
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .ct a:focus-visible,
+  .ct button:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: var(--radius-md);
+  }
+
+  /* ───── Formulario ───── */
+  .ct-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-20);
+  }
+  .ct-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+  .ct-label {
+    font-size: var(--text-note);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+  .ct-opt {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-tertiary);
+  }
+  .ct-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 52px;
+    padding: var(--space-12) var(--space-16);
+    border: var(--border-width) solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-white);
+    font: inherit;
+    font-size: var(--text-body);
+    color: var(--color-text-primary);
+    transition:
+      border-color var(--duration-150),
+      box-shadow var(--duration-150);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  textarea.ct-input {
+    min-height: 128px;
+    resize: vertical;
+    line-height: var(--leading-normal);
+  }
+  select.ct-input {
+    padding-right: 44px;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--color-ink) 50%),
+      linear-gradient(135deg, var(--color-ink) 50%, transparent 50%);
+    background-position:
+      calc(100% - 22px) 23px,
+      calc(100% - 16px) 23px;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+  .ct-input:hover {
+    border-color: var(--color-text-tertiary);
+  }
+  .ct-input:focus {
+    outline: none;
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-input-focus);
+  }
+  .ct-input[aria-invalid='true'] {
+    border-color: var(--color-error);
+    box-shadow: var(--shadow-input-error);
+  }
+  .ct-err {
+    margin: 0;
+    font-size: var(--text-note);
+    line-height: var(--leading-snug);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-error);
+  }
+
+  /* Resumen de errores y error de envío */
+  .ct-summary,
+  .ct-senderr {
+    box-sizing: border-box;
+    padding: var(--space-16) 18px;
+    border: var(--border-width) solid var(--color-error);
+    border-radius: var(--radius-md);
+    background: var(--color-error-surface);
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-error-strong);
+  }
+  .ct-summary ul {
+    margin: 0;
+    padding-left: var(--space-20);
+  }
+  .ct-summary a,
+  .ct-senderr a {
+    color: inherit;
+    font-weight: var(--font-weight-semibold);
+    text-underline-offset: 3px;
+  }
+  .ct-senderr-alt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-8) var(--space-12);
+    margin: var(--space-8) 0 0;
+  }
+  .ct-retry {
+    min-height: var(--target-min);
+    padding: 0 var(--space-16);
+    border: var(--border-width) solid var(--color-error-strong);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-error-strong);
+    font: inherit;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+  }
+  .ct-retry:hover {
+    background: var(--color-error-strong);
+    color: var(--color-error-surface);
+  }
+
+  /* Honeypot: fuera de pantalla (no display:none) */
+  .ct-hp {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .ct-privacy {
+    margin: 0;
+    font-size: var(--text-note);
+    line-height: var(--leading-normal);
+    color: var(--color-text-tertiary);
+  }
+  .ct-privacy a {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+    text-underline-offset: 3px;
+  }
+
+  .ct-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-12);
+  }
+  .ct-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-10);
+    min-height: 52px;
+    box-sizing: border-box;
+    padding: 0 var(--space-24);
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-200),
+      color var(--duration-200);
+  }
+  .ct-btn.is-solid {
+    border: var(--border-width) solid var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+  }
+  .ct-btn.is-solid:hover:not(:disabled) {
+    background: var(--color-text-secondary);
+    border-color: var(--color-text-secondary);
+  }
+  .ct-btn:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+  .ct-btn.is-line {
+    border: var(--border-width) solid var(--color-ink);
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .ct-btn.is-line:hover {
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+  }
+
+  /* ───── Preguntas frecuentes ───── */
+  .ct-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+    scroll-margin-top: var(--scroll-offset);
+  }
+  .ct-h3 {
+    margin: 0;
+    /* medida del artboard sin token equivalente */
+    font-size: clamp(26px, 2.8cqw, 40px);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .ct-faq {
+    border-bottom: var(--border-width) solid var(--color-border-strong);
+  }
+  .ct-q {
+    border-top: var(--border-width) solid var(--color-border-strong);
+  }
+  .ct-qbtn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-20);
+    width: 100%;
+    min-height: var(--space-64);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 18px 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: clamp(17px, 1.45cqw, 20px);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-snug);
+    letter-spacing: -0.01em;
+    color: var(--color-text-primary);
+    text-align: left;
+    cursor: pointer;
+  }
+  .ct-qbtn:hover .ct-qtext {
+    text-decoration: underline;
+    text-underline-offset: var(--space-4);
+  }
+  .ct-ind {
+    flex: 0 0 auto;
+    width: var(--space-32);
+    height: var(--space-32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+  }
+  .ct-ind-v {
+    transition:
+      opacity var(--duration-200),
+      transform var(--duration-200);
+    transform-origin: 8px 8px;
+  }
+  .ct-q[data-open='true'] .ct-ind-v {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+  .ct-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-400) var(--ease-out);
+  }
+  .ct-q[data-open='true'] .ct-panel {
+    grid-template-rows: 1fr;
+  }
+  .ct-clip {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s var(--duration-400);
+  }
+  .ct-q[data-open='true'] .ct-clip {
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .ct-ans {
+    margin: 0;
+    padding: 0 52px var(--space-24) 0;
+    font-size: var(--text-body);
+    line-height: var(--leading-loose);
+    color: var(--color-text-secondary);
+  }
+
+  @container (max-width: 899px) {
+    .ct-wrap {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @container (max-width: 599px) {
+    .ct-btns {
+      flex-direction: column;
+    }
+    .ct-btn {
+      width: 100%;
+    }
+    .ct-ans {
+      padding-right: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ct-panel,
+    .ct-clip,
+    .ct-ind-v,
+    .ct-input,
+    .ct-btn {
+      transition: none !important;
+    }
+  }
+</style>
