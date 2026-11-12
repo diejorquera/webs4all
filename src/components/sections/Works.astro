@@ -1,1 +1,320 @@
-<section>Works</section>
+---
+import { Image } from 'astro:assets';
+import WorkRow from '../islands/WorkRow';
+import ExternalArrowLink from '../ui/ExternalArrowLink.astro';
+import farmaciasShot from '../../assets/ece38ef6680915d561a839e99aa1487b.webp';
+import soynutriShot from '../../assets/38bb3f15bf1f501e85bb94d9bfc9a236.webp';
+
+// Los textos y URLs vienen del artboard. Los corchetes son placeholders que el propio
+// artboard ya trae sin completar: [año de inicio] y [ciudades o comunas verificadas].
+const works = [
+  {
+    id: 'farmaciashoy',
+    meta: '2025 · Buscador de farmacias',
+    kind: 'Proyecto propio',
+    name: 'FarmaciasHoy.cl',
+    href: 'https://farmaciashoy.cl',
+    shot: farmaciasShot,
+    alt: 'Captura de la página de inicio de FarmaciasHoy.cl',
+    text: 'Diseño, desarrollo web y SEO de un buscador de farmacias de turno para todo Chile. Aparece en la primera página de Google en [ciudades o comunas verificadas], con una página propia para cada una.',
+  },
+  {
+    id: 'soynutri',
+    meta: '[año de inicio] – hoy · Centro de nutrición',
+    kind: 'Cliente',
+    name: 'Soynutri.cl',
+    href: 'https://soynutri.cl',
+    shot: soynutriShot,
+    alt: 'Captura de la página de inicio de Soynutri.cl',
+    text: 'Mantención continua del sitio de un centro de nutrición: cambios y nuevas secciones, SEO técnico, respaldo de correos y de la base de datos, y traspaso de un hosting a otro. También implementé las reservas de cursos con pago por Webpay.',
+  },
+];
+---
+
+<section id="trabajos" class="works relative bg-surface-white text-ink">
+  <div
+    class="works-inner mx-auto flex w-full max-w-(--container-max) flex-col px-(--space-gutter-x) py-(--space-section-y)"
+  >
+    <div class="works-head flex flex-wrap items-end justify-between">
+      <h2 class="works-h2 m-0 font-extrabold uppercase">Trabajos</h2>
+      <p class="works-lead m-0">
+        Algunos de los proyectos que he hecho por mi cuenta, propios y de clientes. Lo que más
+        disfruto es aprender y crecer junto a cada negocio.
+      </p>
+    </div>
+
+    <div class="works-list flex flex-col">
+      {
+        works.map((w) => (
+          <WorkRow client:visible id={w.id} meta={w.meta} kind={w.kind} name={w.name}>
+            <ExternalArrowLink
+              slot="link"
+              href={w.href}
+              class="work-link"
+              aria-label={`Visitar ${w.name}`}
+            />
+            <Image
+              src={w.shot}
+              alt={w.alt}
+              width={1280}
+              height={800}
+              widths={[480, 800, 1280]}
+              sizes="(min-width: 768px) 40vw, 100vw"
+              loading="lazy"
+              class="work-img"
+            />
+            <p class="work-text m-0">{w.text}</p>
+          </WorkRow>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Sin JS: los paneles se muestran abiertos para que el contenido siga siendo legible -->
+<noscript>
+  <style>
+    .works .work-panel {
+      grid-template-rows: 1fr;
+    }
+    .works .work-clip {
+      visibility: visible;
+    }
+    .works .work-body {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</noscript>
+
+<style is:global>
+  .works-inner {
+    gap: clamp(36px, 4vw, 56px);
+  }
+  .works-head {
+    gap: var(--space-20) var(--space-64);
+  }
+  .works-h2 {
+    font-size: var(--text-h2-section);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+  }
+  .works-lead {
+    flex: 0 1 560px;
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+  .works-list {
+    border-bottom: var(--border-width) solid var(--color-border-strong);
+  }
+
+  .works .work {
+    border-top: var(--border-width) solid var(--color-border-strong);
+  }
+  .works .work-head {
+    position: relative;
+  }
+
+  /* Botón de la fila: meta | nombre | indicador */
+  .works .work-btn {
+    display: grid;
+    grid-template-columns: 24% minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: var(--space-28) 72px var(--space-28) 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: grid-template-columns var(--duration-450) var(--ease-out);
+  }
+  .works .work[data-open='true'] .work-btn {
+    grid-template-columns: 42% minmax(0, 1fr);
+  }
+  .works .work-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    box-sizing: border-box;
+  }
+  .works .work-meta-line {
+    font-size: var(--text-note);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
+  }
+  .works .work-meta-kind {
+    font-size: var(--text-label-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label-xs);
+    text-transform: uppercase;
+    line-height: 1.2;
+    color: var(--color-text-tertiary);
+  }
+  .works .work-name {
+    display: block;
+    /* medida del artboard sin token equivalente */
+    font-size: clamp(28px, 4.4vw, 64px);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-text-primary);
+  }
+  .works .work-ind {
+    display: none;
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--target-min);
+    height: var(--target-min);
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .works .work-ind-v {
+    transition:
+      opacity var(--duration-200),
+      transform var(--duration-200);
+  }
+  .works .work[data-open='true'] .work-ind-v {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+
+  /* Enlace externo (cuadrado con flecha) */
+  .works .work-link {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    transition:
+      background-color var(--duration-200),
+      color var(--duration-200);
+  }
+  .works .work-link:hover {
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+  }
+
+  /* Panel: altura animada con grid 0fr → 1fr */
+  .works .work-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-450) var(--ease-out);
+  }
+  .works .work[data-open='true'] .work-panel {
+    grid-template-rows: 1fr;
+  }
+  .works .work-clip {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s var(--duration-450);
+  }
+  .works .work[data-open='true'] .work-clip {
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .works .work-body {
+    display: grid;
+    grid-template-columns: 42% minmax(0, 1fr);
+    align-items: start;
+    padding: var(--space-4) 72px var(--space-48) 0;
+    opacity: 0;
+    transform: translateY(var(--space-8));
+    transition:
+      opacity var(--duration-350),
+      transform var(--duration-350);
+  }
+  .works .work[data-open='true'] .work-body {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.1s;
+  }
+  .works .work-img {
+    display: block;
+    width: calc(100% - var(--space-40));
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    box-sizing: border-box;
+    border-radius: var(--radius-md);
+    border: var(--border-width) solid var(--color-border-warm);
+  }
+  .works .work-text {
+    max-width: 600px;
+    font-size: clamp(16px, 1.25vw, 18px);
+    line-height: var(--leading-loose);
+    color: var(--color-text-secondary);
+  }
+
+  /* Táctil en pantallas medias: indicador +/− visible */
+  @media (hover: none) and (min-width: 768px) {
+    .works .work-ind {
+      display: flex;
+    }
+    .works .work-btn {
+      padding-right: 128px;
+    }
+  }
+
+  /* Móvil: una columna */
+  @media (max-width: 767px) {
+    .works .work-btn {
+      display: block;
+      padding: var(--space-16) 0 var(--space-20);
+    }
+    .works .work-meta {
+      min-height: var(--target-min);
+      padding-right: 108px;
+      justify-content: center;
+    }
+    .works .work-name {
+      margin-top: var(--space-10);
+      font-size: clamp(28px, 8.6vw, 40px);
+    }
+    .works .work-ind {
+      display: flex;
+      top: var(--space-16);
+      right: 52px;
+      transform: none;
+    }
+    .works .work-link {
+      top: var(--space-16);
+      transform: none;
+      width: var(--target-min);
+      height: var(--target-min);
+    }
+    .works .work-body {
+      display: block;
+      padding: 0 0 var(--space-28);
+    }
+    .works .work-img {
+      width: 100%;
+      margin-bottom: var(--space-20);
+    }
+  }
+
+  /* Sin animación de altura: apertura instantánea */
+  @media (prefers-reduced-motion: reduce) {
+    .works .work-btn,
+    .works .work-panel,
+    .works .work-clip,
+    .works .work-body,
+    .works .work-ind-v,
+    .works .work-link {
+      transition: none !important;
+    }
+  }
+</style>

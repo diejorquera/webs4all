@@ -1,1 +1,1192 @@
-<section>Pricing</section>
+---
+import TemplatePicker from '../islands/TemplatePicker';
+import Tag from '../ui/Tag.astro';
+import FinePrint from '../ui/FinePrint.astro';
+import { buildWhatsappUrl } from '../../lib/whatsapp';
+
+// Todos los textos, nombres de planes, cifras y condiciones vienen del artboard.
+
+const planMessage = (n: string) => `Hola Diego, me interesa el plan ${n}. Mi negocio es…`;
+
+const plans = [
+  {
+    name: 'Básico',
+    price: '$250.000',
+    recommended: false,
+    desc: 'Para profesionales y emprendedores que necesitan presentarse bien en internet y recibir contactos.',
+    items: [
+      'Una página con hasta 6 secciones',
+      'Diseño adaptable a celular',
+      'Textos redactados por mí',
+      'Formulario de contacto y botón de WhatsApp',
+      'SEO básico para aparecer en Google',
+      '2 rondas de revisión',
+      '2 meses de mantención básica incluida (cambios de textos e imágenes, equivale a 2 horas de trabajo)',
+      'Plazo: 7 días hábiles',
+    ],
+    cta: 'Elegir Básico',
+    href: buildWhatsappUrl(planMessage('Básico')),
+  },
+  {
+    name: 'Estándar',
+    price: '$480.000',
+    recommended: true,
+    desc: 'Para negocios que quieren explicar sus servicios en detalle y aparecer en Google con varias páginas.',
+    items: [
+      'Todo lo del Básico',
+      'Hasta 6 páginas (inicio, servicios, nosotros, contacto y dos más)',
+      'Textos de todas las páginas',
+      'Mapa de ubicación',
+      'SEO por página y Search Console',
+      'Medición de visitas y contactos',
+      'Plazo: 15 días hábiles',
+    ],
+    cta: 'Elegir Estándar',
+    href: buildWhatsappUrl(planMessage('Estándar')),
+  },
+  {
+    name: 'Tienda online',
+    price: '$750.000',
+    recommended: false,
+    desc: 'Para quienes quieren vender productos por internet, con pago y despacho listos.',
+    items: [
+      'Tienda en Shopify o WooCommerce',
+      'Hasta 30 productos cargados',
+      'Pago con Webpay, Flow o Mercado Pago',
+      'Un método de despacho configurado',
+      'Correos automáticos de pedido',
+      'Capacitación grabada para que la administres tú',
+      '2 rondas de revisión',
+      '2 meses de mantención básica incluida (cambios de textos e imágenes, equivale a 2 horas de trabajo)',
+      'Plazo: 20 días hábiles',
+    ],
+    cta: 'Elegir Tienda',
+    href: buildWhatsappUrl(planMessage('Tienda online')),
+  },
+];
+
+const templateNames = [
+  'Plantilla 1 · Profesional de salud',
+  'Plantilla 2 · Servicios locales',
+  'Plantilla 3 · Emprendimiento',
+];
+const templates = templateNames.map((name) => ({
+  name,
+  href: buildWhatsappUrl(planMessage(`Web Express, con la ${name}`)),
+}));
+const expressHref = buildWhatsappUrl(planMessage('Web Express'));
+
+const includes = [
+  'A partir de una de mis plantillas',
+  'Portada, servicios, sobre ti y contacto',
+  'Tu logo, colores y fotos aplicados',
+  'Título y descripción para Google',
+  'Publicación en tu dominio',
+  '1 ronda de revisión',
+  'Plazo: 5 días hábiles desde que envías todo el material',
+];
+const excludes = [
+  'Redacción de textos',
+  'Diseño a medida ni secciones adicionales',
+  'SEO avanzado',
+  'Mantención incluida: solo corrijo errores en los primeros 7 días',
+];
+const diffRows = [
+  ['Diseño', 'Plantilla a elegir', 'A medida'],
+  ['Textos', 'Los entrega el cliente', 'Los escribo yo'],
+  ['SEO', 'Título y descripción', 'Configuración completa'],
+  ['Revisiones', '1', '2'],
+  ['Después de publicar', '7 días, solo errores', '2 meses de mantención básica'],
+  ['Plazo', '5 días hábiles', '7 días hábiles'],
+  ['Precio', '$100.000', '$250.000'],
+];
+
+const steps = [
+  'Me cuentas qué necesitas',
+  'Te entrego las horas y el valor, enseguida y antes de empezar',
+  'Si te acomoda, lo hago, y el valor no cambia',
+];
+
+const maintenance = {
+  items: [
+    'Cambios de textos, imágenes y precios',
+    'Nuevas secciones, páginas y componentes',
+    'Mejoras de velocidad de carga',
+    'Corrección de errores y fallas de funcionamiento',
+    'Actualizaciones de plugins, temas y seguridad',
+    'Respaldos del sitio y de la base de datos',
+    'Traspaso a otro hosting o dominio',
+    'Traspaso y respaldo de correos',
+    'Mejoras de diseño y adaptación a celular',
+    'Integraciones: formularios, WhatsApp, pagos y analítica',
+  ],
+  href: buildWhatsappUrl(
+    'Hola Diego, quiero cotizar una mantención para mi sitio. Mi página es… y necesito…',
+  ),
+};
+const seo = {
+  items: [
+    'Revisión de SEO técnico: velocidad, estructura, indexación y errores',
+    'Búsqueda de las palabras clave que usan tus clientes',
+    'Optimización de títulos, descripciones y encabezados',
+    'Mejora del contenido que ya tienes',
+    'Ficha de Google Business Profile',
+    'Sugerencias de posts y estrategia de contenido',
+    'Configuración de Search Console y Analytics',
+    'Reporte con visitas, contactos y posición en Google',
+  ],
+  href: buildWhatsappUrl(
+    'Hola Diego, quiero cotizar un trabajo de SEO para mi sitio. Mi página es… y busco…',
+  ),
+};
+const generalHref = buildWhatsappUrl();
+---
+
+<section id="precios" class="pr relative">
+  <!-- Grano (multiply, como en el artboard) -->
+  <svg
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    class="pointer-events-none absolute inset-0 z-20 h-full w-full opacity-[0.38] mix-blend-multiply"
+  >
+    <filter id="grain-precios" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"
+      ></feTurbulence>
+      <feColorMatrix type="saturate" values="0"></feColorMatrix>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain-precios)"></rect>
+  </svg>
+
+  <div class="pr-wrap">
+    <!-- 1) Planes -->
+    <div class="pr-head">
+      <h2 class="pr-h2">Precios claros para el sitio web que necesita tu proyecto</h2>
+      <p class="pr-lead">
+        Revisa lo que realmente necesitas y elige el plan que mejor calce con tu negocio. Si tienes
+        dudas, pregúntame y te ayudo a decidir. Todos los precios son finales, sin IVA.
+      </p>
+    </div>
+
+    <div class="pr-cards">
+      {
+        plans.map((p) => (
+          <article class:list={['pr-card', { 'is-rec': p.recommended }]}>
+            <h3 class="pr-level">
+              <span>{p.name}</span>
+              {p.recommended && <Tag>Recomendado</Tag>}
+            </h3>
+            <p class="pr-price">
+              <span>{p.price}</span>
+              <span class="pr-per">/ PROYECTO</span>
+            </p>
+            <p class="pr-desc">{p.desc}</p>
+            <ul class="pr-list">
+              {p.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+            <a class="pr-btn" href={p.href} target="_blank" rel="noopener noreferrer">
+              {p.cta}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    <FinePrint class="pr-note">
+      Los plazos corren desde que me envías tu logo, fotos y datos. La mantención básica incluida
+      cubre cambios de textos e imágenes y equivale a 2 horas de trabajo en total. El dominio (cerca
+      de $10.000 al año) y los costos de Shopify o de la pasarela de pago van aparte y quedan a tu
+      nombre. Pago: 50% al empezar y 50% antes de publicar; en la tienda online, 40%, 30% y 30%.
+    </FinePrint>
+
+    <!-- 2) Web Express -->
+    <div class="pr-x" id="web-express">
+      <TemplatePicker client:visible templates={templates} defaultHref={expressHref}>
+        <Fragment slot="intro">
+          <h3 class="pr-x-title">¿Recién estás partiendo?</h3>
+          <p class="pr-x-lead">
+            Elige una de mis plantillas y te dejo tu página lista en 5 días hábiles, con tu logo, tus
+            colores y tu información.
+          </p>
+        </Fragment>
+
+        <!-- Maquetas decorativas de cada plantilla -->
+        <Fragment slot="thumb1">
+          <span class="r" style="justify-content: space-between; align-items: center"
+            ><span style="width: 18%; height: 8px"></span><span
+              class="k"
+              style="width: 16%; height: 12px"></span></span
+          >
+          <span
+            class="s"
+            style="flex: 1.3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px"
+            ><span style="width: 62%; height: 10px; background: var(--color-ink)"></span><span
+              style="width: 44%; height: 10px; background: var(--color-ink)"></span><span
+              style="width: 52%; height: 5px; margin-top: 3px"></span><span
+              style="width: 24%; height: 14px; margin-top: 4px; background: var(--color-ink)"
+            ></span></span
+          >
+          <span class="r" style="flex: 1"
+            ><span class="s" style="flex: 1"></span><span class="s" style="flex: 1"></span><span
+              class="s"
+              style="flex: 1"></span></span
+          >
+          <span style="width: 70%; height: 5px"></span>
+          <span style="width: 48%; height: 5px"></span>
+          <span class="k" style="height: 16px"></span>
+        </Fragment>
+        <Fragment slot="thumb2">
+          <span class="r" style="justify-content: space-between; align-items: center"
+            ><span style="width: 18%; height: 8px"></span><span style="width: 34%; height: 5px"
+            ></span></span
+          >
+          <span class="r" style="flex: 1.3"
+            ><span class="c" style="flex: 1; justify-content: center"
+              ><span style="width: 90%; height: 10px; background: var(--color-ink)"></span><span
+                style="width: 66%; height: 10px; background: var(--color-ink)"></span><span
+                style="width: 80%; height: 5px; margin-top: 3px"></span><span
+                style="width: 44%; height: 14px; margin-top: 4px; background: var(--color-ink)"
+              ></span></span
+            ><span class="s" style="flex: 1"></span></span
+          >
+          <span class="c" style="flex: 1; justify-content: space-between"
+            ><span class="s" style="flex: 1"></span><span class="s" style="flex: 1"></span><span
+              class="s"
+              style="flex: 1"></span></span
+          >
+          <span class="k" style="height: 16px"></span>
+        </Fragment>
+        <Fragment slot="thumb3">
+          <span class="r" style="justify-content: center"
+            ><span style="width: 22%; height: 8px"></span></span
+          >
+          <span
+            style="flex: 1.2; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; box-sizing: border-box; padding: 10px"
+            ><span style="width: 58%; height: 10px; background: var(--color-ink)"></span><span
+              style="width: 26%; height: 14px; background: var(--color-surface-white)"></span></span
+          >
+          <span class="r" style="flex: 1"
+            ><span class="c" style="flex: 1"
+              ><span class="s" style="flex: 1"></span><span style="width: 70%; height: 5px"
+              ></span></span
+            ><span class="c" style="flex: 1"
+              ><span class="s" style="flex: 1"></span><span style="width: 70%; height: 5px"
+              ></span></span
+            ></span
+          >
+          <span class="r" style="flex: 1"
+            ><span class="c" style="flex: 1"
+              ><span class="s" style="flex: 1"></span><span style="width: 70%; height: 5px"
+              ></span></span
+            ><span class="c" style="flex: 1"
+              ><span class="s" style="flex: 1"></span><span style="width: 70%; height: 5px"
+              ></span></span
+            ></span
+          >
+        </Fragment>
+
+        <Fragment slot="info">
+          <h4 class="pr-level"><span>Web Express</span></h4>
+          <p class="pr-price"><span>$100.000</span><span class="pr-per">/ PROYECTO</span></p>
+          <p class="pr-desc">
+            Una página con hasta 4 secciones, adaptable a celular, con WhatsApp y formulario de
+            contacto. Tú me entregas los textos y las fotos.
+          </p>
+        </Fragment>
+
+        <Fragment slot="lists">
+          <div>
+            <h4>Incluye</h4>
+            <ul class="pr-list pr-yes">
+              {includes.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h4>No incluye</h4>
+            <ul class="pr-list pr-no">
+              {excludes.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </Fragment>
+
+        <Fragment slot="note">
+          <FinePrint>
+            Pago: 50% al empezar y 50% antes de publicar. Dominio y costos de terceros van aparte.
+          </FinePrint>
+        </Fragment>
+
+        <Fragment slot="diff">
+          <table class="pr-table">
+            <thead>
+              <tr>
+                <th scope="col"><span>Característica</span></th>
+                <th scope="col">Express</th>
+                <th scope="col">Básico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                diffRows.map(([label, express, basic]) => (
+                  <tr>
+                    <th scope="row">{label}</th>
+                    <td>{express}</td>
+                    <td>{basic}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </Fragment>
+      </TemplatePicker>
+    </div>
+
+    <!-- 3) Mantención y SEO -->
+    <div class="pr-m" id="mantencion-seo">
+      <div class="pr-mhead">
+        <h3 class="pr-m-title">Mantención y SEO para tu sitio</h3>
+        <p class="pr-m-lead">
+          ¿Ya tienes una página, hecha por mí o por otra persona, y carga lento, no guarda los datos
+          de tus formularios o ya no te gusta cómo se ve? Te ayudo a mejorarla. Sin IVA.
+        </p>
+      </div>
+
+      <!-- 4) Cómo se cobra -->
+      <div class="pr-rule">
+        <h4>Cómo se cobra</h4>
+        <p>
+          El valor depende del tiempo que tome el trabajo. Me cuentas qué necesitas y te doy enseguida
+          la cotización, con las horas estimadas y el valor total, antes de empezar. Si me demoro más
+          de lo estimado, es problema mío y no se te cobra la diferencia.
+        </p>
+      </div>
+
+      <ol class="pr-steps">
+        {
+          steps.map((text, i) => (
+            <li>
+              <span class="pr-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span>{text}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="pr-mcards">
+        <article class="pr-mcard">
+          <h4 class="pr-level"><span>Mantención</span></h4>
+          <p class="pr-hours">Según horas de trabajo</p>
+          <p class="pr-desc">
+            Todo lo que tu sitio necesita para estar al día, rápido y funcionando.
+          </p>
+          <ul class="pr-list">
+            {maintenance.items.map((item) => <li>{item}</li>)}
+          </ul>
+          <div class="pr-mfoot">
+            <p>¿Prefieres algo mensual? Podemos acordar una mantención mensual a tu medida.</p>
+            <a
+              class="pr-btn on-dark"
+              href={maintenance.href}
+              target="_blank"
+              rel="noopener noreferrer">Cotizar mantención</a
+            >
+          </div>
+        </article>
+
+        <article class="pr-mcard">
+          <h4 class="pr-level"><span>SEO</span></h4>
+          <p class="pr-hours">Según horas de trabajo</p>
+          <p class="pr-desc">
+            El SEO no es solo escribir textos bonitos: es la parte técnica, la estructura y la
+            medición que ayudan a que Google entienda y muestre tu sitio. No prometo posiciones:
+            trabajo con método y te muestro los avances con datos.
+          </p>
+          <ul class="pr-list">
+            {seo.items.map((item) => <li>{item}</li>)}
+          </ul>
+          <div class="pr-mfoot">
+            <p>¿Quieres un trabajo continuo? Podemos acordar un seguimiento mensual.</p>
+            <a class="pr-btn on-dark" href={seo.href} target="_blank" rel="noopener noreferrer"
+              >Cotizar SEO</a
+            >
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="pr-end">
+      <p>¿Necesitas algo distinto? Cuéntame y lo conversamos.</p>
+      <a class="pr-btn is-solid" href={generalHref} target="_blank" rel="noopener noreferrer"
+        >Escríbeme por WhatsApp</a
+      >
+    </div>
+  </div>
+</section>
+
+<!-- Sin JS: la tabla de diferencias se muestra abierta -->
+<noscript>
+  <style>
+    .pr .pr-diff {
+      grid-template-rows: 1fr;
+    }
+    .pr .pr-diffclip {
+      visibility: visible;
+    }
+  </style>
+</noscript>
+
+<style is:global>
+  /* ───── Contenedor (las unidades cqw y @container dependen de esto) ───── */
+  .pr {
+    container-type: inline-size;
+    background:
+      radial-gradient(
+        ellipse 70% 50% at 0% 0%,
+        color-mix(in srgb, var(--color-purple-500) 12%, transparent) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 60% 45% at 100% 38%,
+        color-mix(in srgb, var(--color-orange-400) 14%, transparent) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 70% 40% at 20% 100%,
+        color-mix(in srgb, var(--color-violet-700) 10%, transparent) 0%,
+        transparent 70%
+      ),
+      var(--color-surface-lilac);
+    color: var(--color-text-primary);
+  }
+  .pr-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: clamp(64px, 8cqw, 120px) clamp(20px, 4.5cqw, 64px);
+  }
+  .pr-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-20) var(--space-64);
+    margin-bottom: clamp(36px, 4cqw, 56px);
+  }
+  .pr-h2 {
+    flex: 1 1 520px;
+    max-width: 860px;
+    margin: 0;
+    font-size: var(--text-h2-section);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+    text-transform: uppercase;
+  }
+  .pr-lead {
+    flex: 1 1 320px;
+    max-width: 460px;
+    margin: 0;
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  /* ───── Tarjetas de plan ───── */
+  .pr-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+  .pr-card,
+  .pr-mcard {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: var(--space-32);
+    border-radius: var(--radius-lg);
+  }
+  .pr-card {
+    background: var(--color-surface-white);
+    border: var(--border-width) solid var(--color-border-lilac);
+    transition:
+      border-color var(--duration-200),
+      transform var(--duration-200),
+      box-shadow var(--duration-200);
+  }
+  .pr-card:hover {
+    border-color: var(--color-text-tertiary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  .pr-card.is-rec {
+    border: var(--border-width-strong) solid var(--color-border-strong);
+    padding: calc(var(--space-32) - var(--border-width));
+  }
+  .pr-card.is-rec:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .pr-level {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+    min-height: 28px;
+    margin: 0;
+    font-size: var(--text-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+  .pr-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-4) var(--space-10);
+    margin: var(--space-20) 0 0;
+    font-size: var(--text-price);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-heading);
+    line-height: var(--leading-none);
+    color: var(--color-text-primary);
+  }
+  .pr-per {
+    font-size: var(--text-label);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-label-xs);
+    color: var(--color-text-tertiary);
+  }
+  .pr-desc {
+    margin: var(--space-16) 0 0;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-text-tertiary);
+  }
+  .pr-cards .pr-desc {
+    min-height: 4.5em;
+  }
+  .pr-list {
+    list-style: none;
+    margin: var(--space-24) 0 var(--space-28);
+    padding: 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.4;
+    color: var(--color-text-primary);
+  }
+  .pr-list li {
+    padding: var(--space-12) 0;
+    border-top: var(--border-width) solid var(--color-border-lilac-soft);
+  }
+
+  /* ───── Botones de la sección ───── */
+  .pr-btn {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-10);
+    min-height: 52px;
+    box-sizing: border-box;
+    padding: 0 var(--space-24);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-primary);
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    text-align: center;
+    transition:
+      background-color var(--duration-250),
+      color var(--duration-250);
+  }
+  .pr-btn:hover {
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+  }
+  .pr-btn.is-solid {
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+  }
+  .pr-btn.is-solid:hover {
+    background: var(--color-text-secondary);
+  }
+  .pr-btn.on-dark {
+    border-color: var(--color-text-on-dark);
+    color: var(--color-text-on-dark);
+  }
+  .pr-btn.on-dark:hover {
+    background: var(--color-text-on-dark);
+    color: var(--color-violet-900);
+  }
+  .pr a:focus-visible,
+  .pr button:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: var(--radius-md);
+  }
+  .pr .pr-m a:focus-visible {
+    outline-color: var(--color-text-on-dark);
+  }
+
+  .pr-note {
+    margin-top: var(--space-28);
+    max-width: 980px;
+  }
+
+  /* ───── Web Express ───── */
+  .pr-x {
+    margin-top: clamp(64px, 8cqw, 112px);
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--color-surface-white) 55%, transparent);
+    border: var(--border-width) solid var(--color-border-lilac);
+    border-radius: var(--radius-xl);
+    padding: clamp(24px, 4cqw, 56px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 3cqw, 40px);
+  }
+  .pr-x-title {
+    margin: 0;
+    font-size: clamp(24px, 2.6cqw, 36px);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-heading);
+    text-transform: uppercase;
+  }
+  .pr-x-lead {
+    margin: var(--space-12) 0 0;
+    max-width: 640px;
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  /* Selector de plantilla: radios nativos, la etiqueta es la miniatura */
+  .pr-tpls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-20);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .pr-thumb {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .pr-radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .pr-frame {
+    position: relative;
+    display: block;
+    border: var(--border-width) solid var(--color-border-lilac);
+    border-radius: var(--radius-thumb);
+    background: var(--color-surface-white);
+    overflow: hidden;
+    transition:
+      transform var(--duration-200),
+      box-shadow var(--duration-200),
+      border-color var(--duration-200);
+  }
+  .pr-thumb:hover .pr-frame {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-thumb-hover);
+  }
+  .pr-radio:checked + .pr-frame {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-ring-selected);
+  }
+  .pr-radio:focus-visible + .pr-frame {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 4px;
+  }
+  .pr-check {
+    display: none;
+    position: absolute;
+    top: 36px;
+    right: var(--space-10);
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+    align-items: center;
+    justify-content: center;
+  }
+  .pr-radio:checked + .pr-frame .pr-check {
+    display: flex;
+  }
+  .pr-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 26px;
+    padding: 0 var(--space-10);
+    border-bottom: var(--border-width) solid var(--color-border-lilac-soft);
+    background: var(--color-surface-lilac-bar);
+  }
+  .pr-bar i {
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
+    background: var(--color-border-lilac);
+  }
+  .pr-page {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    box-sizing: border-box;
+    padding: var(--space-12);
+    aspect-ratio: 10 / 10.5;
+  }
+  .pr-page span {
+    display: block;
+    border-radius: var(--radius-xs);
+    background: var(--color-border-lilac-mid);
+  }
+  .pr-page .k {
+    background: var(--color-ink);
+  }
+  .pr-page .s {
+    background: var(--color-surface-lilac-block);
+  }
+  .pr-page .r {
+    display: flex;
+    gap: var(--space-8);
+    background: none;
+  }
+  .pr-page .c {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+  }
+  .pr-cap {
+    display: block;
+    margin-top: var(--space-12);
+    font-size: var(--text-note);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+    color: var(--color-text-primary);
+  }
+
+  .pr-xgrid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-areas:
+      'info lists'
+      'act lists';
+    grid-template-rows: auto 1fr;
+    gap: var(--space-28) var(--space-56);
+    border-top: var(--border-width) solid var(--color-border-lilac);
+    padding-top: clamp(28px, 3cqw, 40px);
+  }
+  .pr-xgrid > :nth-child(1) {
+    grid-area: info;
+  }
+  .pr-two {
+    grid-area: lists;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-32);
+  }
+  .pr-act {
+    grid-area: act;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pr-act .pr-btn {
+    margin-top: 0;
+  }
+  .pr-two h4 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+  }
+  .pr-two .pr-list {
+    margin: var(--space-12) 0 0;
+  }
+  .pr-two .pr-list li {
+    position: relative;
+    padding-left: 26px;
+    border-top-color: var(--color-border-lilac-mid);
+  }
+  .pr-yes li::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 15px;
+    width: 10px;
+    height: 5px;
+    border-left: 2px solid var(--color-ink);
+    border-bottom: 2px solid var(--color-ink);
+    transform: rotate(-45deg);
+  }
+  .pr-no li {
+    color: var(--color-text-secondary);
+  }
+  .pr-no li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 21px;
+    width: 12px;
+    height: 2px;
+    background: var(--color-text-tertiary);
+  }
+
+  /* Diferencias con el Básico */
+  .pr-diffbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    min-height: var(--target-min);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-underline-offset: var(--space-4);
+    cursor: pointer;
+  }
+  .pr-diffbtn svg {
+    transition: transform var(--duration-250);
+  }
+  .pr-diffbtn[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+  .pr-diff {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-400) var(--ease-out);
+  }
+  .pr-diff[data-open='true'] {
+    grid-template-rows: 1fr;
+  }
+  .pr-diffclip {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s var(--duration-400);
+  }
+  .pr-diff[data-open='true'] .pr-diffclip {
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .pr-table {
+    width: 100%;
+    max-width: 820px;
+    margin-top: var(--space-12);
+    border-collapse: collapse;
+    font-size: var(--text-body-sm);
+    line-height: 1.4;
+    color: var(--color-text-primary);
+    text-align: left;
+  }
+  .pr-table th,
+  .pr-table td {
+    padding: var(--space-12) var(--space-16) var(--space-12) 0;
+    border-top: var(--border-width) solid var(--color-border-lilac);
+    vertical-align: top;
+    font-weight: var(--font-weight-regular);
+  }
+  .pr-table thead th {
+    border-top: 0;
+    font-size: var(--text-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .pr-table tbody th {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-tertiary);
+  }
+
+  /* ───── Banda Mantención y SEO (violeta) ───── */
+  .pr-m {
+    --pr-line: color-mix(in srgb, var(--color-text-on-dark) 28%, transparent);
+    position: relative;
+    overflow: hidden;
+    margin-top: clamp(64px, 8cqw, 112px);
+    box-sizing: border-box;
+    background: var(--gradient-violet);
+    color: var(--color-text-on-dark);
+    border-radius: var(--radius-xl);
+    padding: clamp(24px, 4.5cqw, 64px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, 3.5cqw, 48px);
+  }
+  .pr-m > * {
+    position: relative;
+    z-index: 1;
+  }
+  .pr-mhead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-20) var(--space-64);
+  }
+  .pr-m-title {
+    flex: 1 1 420px;
+    max-width: 640px;
+    margin: 0;
+    font-size: var(--text-h3-section);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-heading);
+    text-transform: uppercase;
+    color: var(--color-text-on-dark);
+  }
+  .pr-m-lead {
+    flex: 1 1 320px;
+    max-width: 520px;
+    margin: 0;
+    font-size: var(--text-lead);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-on-dark);
+  }
+
+  /* Cómo se cobra (lila claro) */
+  .pr-rule {
+    box-sizing: border-box;
+    background: var(--color-lilac-100);
+    color: var(--color-violet-900);
+    border-radius: var(--radius-lg);
+    padding: clamp(22px, 2.6cqw, 32px);
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--space-12) var(--space-40);
+    align-items: start;
+  }
+  .pr-rule h4 {
+    margin: 0;
+    font-size: var(--text-h2-reading);
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-subheading);
+    text-transform: uppercase;
+  }
+  .pr-rule p {
+    margin: 0;
+    font-size: clamp(16px, 1.4cqw, 20px);
+    line-height: var(--leading-normal);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .pr-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+  .pr-steps li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-14);
+    border-top: var(--border-width) solid var(--pr-line);
+    padding-top: var(--space-20);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+    color: var(--color-text-on-dark);
+  }
+  .pr-num {
+    font-size: var(--text-number-step);
+    font-weight: var(--font-weight-extrabold);
+    line-height: var(--leading-none);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-lilac-200);
+  }
+
+  .pr-mcards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+  .pr-mcard {
+    background: color-mix(in srgb, var(--color-text-on-dark) 5%, transparent);
+    border: var(--border-width) solid var(--pr-line);
+    transition:
+      border-color var(--duration-200),
+      transform var(--duration-200),
+      background-color var(--duration-200);
+  }
+  .pr-mcard:hover {
+    border-color: color-mix(in srgb, var(--color-text-on-dark) 75%, transparent);
+    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--color-text-on-dark) 8%, transparent);
+  }
+  .pr-mcard .pr-level {
+    color: var(--color-text-on-dark);
+  }
+  .pr-hours {
+    margin: var(--space-20) 0 0;
+    font-size: clamp(28px, 2.8cqw, 40px);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--tracking-subheading);
+    line-height: var(--leading-tight);
+    text-transform: uppercase;
+    color: var(--color-text-on-dark);
+  }
+  .pr-mcard .pr-desc {
+    color: var(--color-text-on-dark-muted);
+  }
+  .pr-mcard .pr-list {
+    color: var(--color-text-on-dark);
+  }
+  .pr-mcard .pr-list li {
+    border-top-color: color-mix(in srgb, var(--color-text-on-dark) 18%, transparent);
+  }
+  .pr-mfoot {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-20);
+  }
+  .pr-mfoot p {
+    margin: 0;
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-on-dark);
+  }
+
+  /* Cierre */
+  .pr-end {
+    margin-top: clamp(56px, 6cqw, 88px);
+    border-top: var(--border-width) solid var(--color-border-strong);
+    padding-top: var(--space-32);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-20) var(--space-40);
+  }
+  .pr-end p {
+    margin: 0;
+    flex: 1 1 300px;
+    font-size: clamp(20px, 2cqw, 28px);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.25;
+    letter-spacing: var(--tracking-subheading);
+    color: var(--color-text-primary);
+  }
+  .pr-end .pr-btn {
+    margin-top: 0;
+  }
+
+  /* ───── Responsive (según el ancho de la sección) ───── */
+  @container (max-width: 979px) {
+    .pr-cards,
+    .pr-mcards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pr-cards .pr-desc {
+      min-height: 0;
+    }
+    .pr-xgrid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'info'
+        'lists'
+        'act';
+      grid-template-rows: auto;
+    }
+    .pr-rule {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pr-steps {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-20);
+    }
+  }
+  @container (max-width: 767px) {
+    .pr-card,
+    .pr-mcard {
+      padding: var(--space-24);
+    }
+    .pr-card.is-rec {
+      padding: calc(var(--space-24) - var(--border-width));
+    }
+    .pr-tpls {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      gap: var(--space-14);
+      margin: 0 calc(-1 * clamp(24px, 4cqw, 56px));
+      padding: var(--space-4) clamp(24px, 4cqw, 56px) var(--space-10);
+    }
+    .pr-thumb {
+      flex: 0 0 72%;
+      scroll-snap-align: center;
+    }
+    .pr-two {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-28);
+    }
+    .pr-table {
+      font-size: var(--text-note);
+    }
+    .pr-table th,
+    .pr-table td {
+      padding-right: var(--space-10);
+    }
+    .pr-steps li {
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--space-16);
+    }
+    .pr-num {
+      font-size: 40px;
+      flex: 0 0 56px;
+    }
+    .pr-end .pr-btn {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pr-card,
+    .pr-mcard,
+    .pr-frame,
+    .pr-btn,
+    .pr-diff,
+    .pr-diffclip,
+    .pr-diffbtn svg {
+      transition: none !important;
+    }
+    .pr-tpls {
+      scroll-behavior: auto;
+    }
+  }
+</style>

@@ -1,1 +1,17 @@
-<span>FinePrint</span>
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<p class:list={['fine-print', className]}><slot /></p>
+
+<style>
+  .fine-print {
+    margin: 0;
+    font-size: var(--text-note);
+    line-height: var(--leading-loose);
+    color: var(--color-text-tertiary);
+  }
+</style>

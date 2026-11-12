@@ -1,1 +1,19 @@
-<span>Tag</span>
+---
+---
+
+<span class="tag"><slot /></span>
+
+<style>
+  .tag {
+    display: inline-block;
+    padding: 5px var(--space-10);
+    border-radius: var(--radius-tag);
+    background: var(--color-ink);
+    color: var(--color-text-on-dark);
+    /* medidas del artboard sin token equivalente */
+    font-size: 12px;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+</style>
