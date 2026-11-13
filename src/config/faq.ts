@@ -10,7 +10,7 @@ export interface FaqItem {
 export const faq: FaqItem[] = [
   {
     q: '¿Cuánto vale una página web en Chile?',
-    a: 'Depende de lo que necesites. Conmigo, una Web Express vale $100.000, una one page $250.000, un sitio de seis páginas $480.000 y una tienda online $750.000. Son precios finales y sin IVA, porque trabajo con boleta de honorarios. La mantención y el SEO se cotizan según las horas de trabajo.',
+    a: 'Depende de lo que necesites. Conmigo, una Web Express vale $100.000, el plan Básico $250.000, el Estándar $480.000 y la Tienda online $750.000. Son precios finales y sin IVA, porque trabajo con boleta de honorarios. La mantención y el SEO se cotizan según las horas de trabajo.',
   },
   {
     q: '¿Qué necesito para empezar?',

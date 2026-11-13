@@ -1,11 +1,5 @@
 ---
 import Logo from '../../assets/logos/webs4all-20.svg';
-import type { site as SiteConfig } from '../../config/site';
-
-interface Props {
-  site: typeof SiteConfig;
-}
-
 const year = new Date().getFullYear();
 ---
 
@@ -22,10 +16,10 @@ const year = new Date().getFullYear();
       <nav aria-label="Legal">
         <ul class="m-0 flex list-none flex-wrap gap-x-(--space-24) p-0">
           <li>
-            <a class="footer-link" href="/politica-de-privacidad">Política de privacidad</a>
+            <a class="footer-link" href="/politica-de-privacidad/">Política de privacidad</a>
           </li>
           <li>
-            <a class="footer-link" href="/terminos-del-servicio">Términos del servicio</a>
+            <a class="footer-link" href="/terminos-del-servicio/">Términos del servicio</a>
           </li>
         </ul>
       </nav>

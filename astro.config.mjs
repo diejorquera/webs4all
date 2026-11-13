@@ -9,8 +9,15 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: confirmar el dominio final. Se usa para las URLs canónicas y el sitemap.
+  // Dominio de producción (Cloudflare). Se usa para las URLs canónicas y el sitemap.
   site: 'https://webs4all.cl',
+
+  // Cloudflare sirve /ruta/index.html como /ruta/ (y redirige /ruta a /ruta/): se usa siempre
+  // la forma con barra final, así los enlaces, el canonical y el sitemap coinciden.
+  trailingSlash: 'always',
+
+  // Incrusta el CSS en el HTML (son ~16 KB): elimina las hojas que bloquean el render.
+  build: { inlineStylesheets: 'always' },
 
   integrations: [
     react(),

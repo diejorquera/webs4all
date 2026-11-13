@@ -1,10 +1,7 @@
 ---
 import Logo from '../../assets/logos/webs4all-20.svg';
-import MobileMenu from '../islands/MobileMenu';
-import type { site as SiteConfig } from '../../config/site';
 
 interface Props {
-  site: typeof SiteConfig;
   /** '' en la home (anclas locales), '/' en otras páginas (/#servicios, ...) */
   hrefPrefix?: string;
 }
@@ -45,7 +42,33 @@ const contactHref = `${hrefPrefix}#contacto`;
 
     <div class="flex flex-1 basis-0 items-center justify-end gap-(--space-8)">
       <a href={contactHref} class="btn-contact">Escríbeme</a>
-      <MobileMenu client:idle links={links} contactHref={contactHref} />
+
+      <!--
+        Menú móvil con <details>: abre y cierra sin JavaScript. El script de abajo solo agrega
+        Escape, clic fuera, foco atrapado, bloqueo del scroll y el texto "Abrir/Cerrar menú".
+      -->
+      <details class="mobile-menu min-[901px]:hidden" data-mobile-menu>
+        <summary class="mm-button" aria-label="Abrir menú">
+          <svg class="mm-icon-open" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M3 6h14M3 10h14M3 14h14"></path>
+          </svg>
+          <svg class="mm-icon-close" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M5 5l10 10M15 5L5 15"></path>
+          </svg>
+        </summary>
+        <div class="mm-panel" id="menu-movil">
+          <nav class="mm-nav" aria-label="Principal, móvil">
+            {
+              links.map((l) => (
+                <a href={l.href} data-nav={l.id} class="mm-link">
+                  {l.label}
+                </a>
+              ))
+            }
+            <a href={contactHref} class="mm-cta">Escríbeme</a>
+          </nav>
+        </div>
+      </details>
     </div>
   </div>
 </header>
@@ -130,27 +153,94 @@ const contactHref = `${hrefPrefix}#contacto`;
     background-color: var(--color-surface-white);
     color: var(--color-navy-900);
   }
+
+  /* ───── Menú móvil (<details>) ───── */
+  .mm-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--target-min);
+    height: var(--target-min);
+    border: var(--border-width) solid var(--color-border-on-dark);
+    border-radius: var(--radius-md);
+    color: var(--color-text-on-dark);
+    cursor: pointer;
+    list-style: none;
+  }
+  .mm-button::-webkit-details-marker {
+    display: none;
+  }
+  .mm-icon-close {
+    display: none;
+  }
+  .mobile-menu[open] .mm-icon-open {
+    display: none;
+  }
+  .mobile-menu[open] .mm-icon-close {
+    display: block;
+  }
+  /* Panel a pantalla completa bajo la barra */
+  .mm-panel {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    top: var(--nav-height);
+    overflow-y: auto;
+    background: var(--color-navy-900);
+  }
+  .mm-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    box-sizing: border-box;
+    padding: var(--space-8) var(--space-gutter-x) var(--space-32);
+  }
+  .mm-link {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    border-bottom: var(--border-width) solid var(--color-border-on-dark);
+    color: var(--color-text-on-dark);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+  }
+  .mm-link[aria-current='true'] {
+    font-weight: var(--font-weight-bold);
+  }
+  .mm-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--target-min);
+    margin-top: var(--space-24);
+    padding: 0 var(--space-24);
+    border-radius: var(--radius-md);
+    background-image: var(--gradient-button-blue);
+    color: var(--color-text-on-dark);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+  }
 </style>
 
 <script>
-  // Resalta el enlace de la sección visible. Sin dependencias.
-  const desktopLinks = document.querySelectorAll<HTMLAnchorElement>('[data-navbar] a[data-nav]');
-  const sections = Array.from(desktopLinks)
-    .map((a) => document.getElementById(a.dataset.nav!))
+  // Resalta el enlace de la sección visible (escritorio y menú móvil). Sin dependencias.
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('[data-navbar] a[data-nav]');
+  const sections = Array.from(new Set(Array.from(navLinks).map((a) => a.dataset.nav!)))
+    .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => el !== null);
 
   if (sections.length && 'IntersectionObserver' in window) {
     const visible = new Set<string>();
 
     const setCurrent = (id: string | null) => {
-      desktopLinks.forEach((a) => {
+      navLinks.forEach((a) => {
         if (a.dataset.nav === id) a.setAttribute('aria-current', 'true');
         else a.removeAttribute('aria-current');
       });
-      if (id) document.documentElement.dataset.navCurrent = id;
-      else delete document.documentElement.dataset.navCurrent;
-      // El menú móvil (React) escucha este evento
-      window.dispatchEvent(new CustomEvent('navcurrent', { detail: id }));
     };
 
     const io = new IntersectionObserver(
@@ -165,5 +255,77 @@ const contactHref = `${hrefPrefix}#contacto`;
       { rootMargin: '-45% 0px -50% 0px' },
     );
     sections.forEach((s) => io.observe(s));
+  }
+
+  // Menú móvil: el <details> ya abre y cierra solo; esto agrega el comportamiento accesible.
+  const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
+  if (menu) {
+    const summary = menu.querySelector<HTMLElement>('summary')!;
+    const nav = menu.querySelector<HTMLElement>('.mm-nav')!;
+    const wide = window.matchMedia('(min-width: 901px)');
+
+    const close = () => {
+      menu.open = false;
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      // Foco atrapado: el botón del menú y los enlaces del panel
+      const items = [summary, ...Array.from(nav.querySelectorAll<HTMLElement>('a[href]'))];
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      const inside = active ? items.includes(active) : false;
+      if (e.shiftKey && (active === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    // Clic fuera: cualquier punto que no sea el botón ni los enlaces del panel
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (summary.contains(target) || nav.contains(target)) return;
+      close();
+    };
+
+    menu.addEventListener('toggle', () => {
+      const open = menu.open;
+      summary.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('pointerdown', onPointerDown);
+        nav.querySelector<HTMLElement>('a[href]')?.focus();
+      } else {
+        document.removeEventListener('keydown', onKeyDown);
+        document.removeEventListener('pointerdown', onPointerDown);
+        // Devuelve el foco al botón si estaba dentro del panel o se perdió
+        const active = document.activeElement;
+        if (!active || active === document.body || nav.contains(active)) summary.focus({ preventScroll: true });
+      }
+    });
+
+    // Tocar un enlace cierra el menú. Orden importante para que el desplazamiento suave hacia el
+    // ancla no se cancele: 1) se libera el bloqueo del scroll ANTES del salto (cambiar el
+    // overflow del body en pleno desplazamiento lo aborta) y 2) el panel se cierra DESPUÉS de
+    // que el navegador inicia el salto (si se oculta durante el clic, el salto se pierde).
+    nav.addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('a[href]')) return;
+      document.body.style.overflow = '';
+      window.setTimeout(close, 0);
+    });
+
+    // Si la pantalla se agranda, el menú móvil ya no aplica
+    wide.addEventListener('change', () => {
+      if (wide.matches) close();
+    });
   }
 </script>

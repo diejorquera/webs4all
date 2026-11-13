@@ -24,6 +24,8 @@ export default function Timeline({ steps }: Props) {
   useLayoutEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce || !('IntersectionObserver' in window)) return;
+    // Intencional: se oculta antes del primer pintado para evitar un parpadeo.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAnim('ready');
   }, []);
 

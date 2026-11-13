@@ -1,9 +1,10 @@
 @import "tailwindcss";
-@import "@fontsource-variable/plus-jakarta-sans/wght.css";
 
 /*
- * Alias de fuente: el paquete registra la familia como 'Plus Jakarta Sans Variable',
- * pero el token --font-sans usa 'Plus Jakarta Sans'. Este alias evita tocar el token.
+ * Fuente autoalojada (paquete @fontsource-variable/plus-jakarta-sans, solo latin y latin-ext).
+ * El paquete registra la familia como 'Plus Jakarta Sans Variable', pero el token --font-sans
+ * usa 'Plus Jakarta Sans': por eso se declara aquí con el nombre del token en vez de importar
+ * el CSS del paquete (que además incluiría subconjuntos cirílico y vietnamita sin uso).
  */
 @font-face {
   font-family: 'Plus Jakarta Sans';

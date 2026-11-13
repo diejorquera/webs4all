@@ -2,7 +2,8 @@
 import '../styles/global.css';
 import NavBar from '../components/layout/NavBar.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
-import { site } from '../config/site';
+// Precarga la fuente principal: sin esto se descubre recién al leer el CSS
+import fontLatin from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 
 interface Props {
   /** <title> completo. Por defecto, el de la landing (guía de estilo, sección 12). */
@@ -47,7 +48,7 @@ const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
+    <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
@@ -86,10 +87,10 @@ const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
     >
       Saltar al contenido
     </a>
-    <NavBar site={site} hrefPrefix={hrefPrefix} />
+    <NavBar hrefPrefix={hrefPrefix} />
     <main id="contenido">
       <slot />
     </main>
-    <SiteFooter site={site} />
+    <SiteFooter />
   </body>
 </html>

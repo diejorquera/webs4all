@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react';
+import { useRef, useState, type SyntheticEvent } from 'react';
 import {
   submitForm,
   validateAll,
@@ -52,7 +52,7 @@ export default function ContactForm({ email, whatsappHref, privacyHref }: Props)
     });
   };
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
     event.preventDefault();
     if (status === 'sending') return;
 
@@ -70,7 +70,7 @@ export default function ContactForm({ email, whatsappHref, privacyHref }: Props)
     setStatus('sending');
     const result = await submitForm(values, honeypot.current?.value ?? '');
     if (result.ok) {
-      window.location.assign('/gracias');
+      window.location.assign('/gracias/');
       return; // se queda en "enviando" mientras navega
     }
     setStatus('error');
