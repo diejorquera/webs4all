@@ -12,6 +12,7 @@ const whatsappHref = buildWhatsappUrl('Hola Diego, llegué a una página que no 
   title="Página no encontrada · Webs4all"
   description="Puede que el enlace esté mal escrito o que la página ya no esté."
   noindex
+  overlayNav
 >
   <section class="e404 relative isolate overflow-hidden bg-gradient-navy text-(--color-text-on-dark)">
     <!-- Mismo halo del Hero (solo escritorio) -->
@@ -82,7 +83,7 @@ const whatsappHref = buildWhatsappUrl('Hola Diego, llegué a una página que no 
   .e404 {
     container-type: inline-size;
     min-height: 100vh;
-    min-height: calc(100svh - var(--nav-height));
+    min-height: 100svh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,7 +94,7 @@ const whatsappHref = buildWhatsappUrl('Hola Diego, llegué a una página que no 
     width: 100%;
     max-width: 760px;
     box-sizing: border-box;
-    padding: clamp(56px, 8cqw, 112px) var(--space-gutter-x);
+    padding: calc(var(--nav-height) + clamp(56px, 8cqw, 112px)) var(--space-gutter-x) clamp(56px, 8cqw, 112px);
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -138,20 +138,16 @@ const phrases = [
 </section>
 
 <style>
-  /* Ocupa la pantalla junto con el nav sticky (nav-height) */
+  /* Ocupa toda la pantalla; el nav (transparente, fixed) queda encima */
   .hero {
     min-height: 100vh;
-    min-height: calc(100svh - var(--nav-height));
-  }
-  @supports (height: 100svh) {
-    .hero {
-      min-height: calc(100svh - var(--nav-height));
-    }
+    min-height: 100svh;
   }
 
   /* Medidas del artboard sin token equivalente */
   .hero-main {
-    padding-block: clamp(24px, 4vw, 56px);
+    padding-top: calc(var(--nav-height) + clamp(24px, 4vw, 56px));
+    padding-bottom: clamp(24px, 4vw, 56px);
     gap: clamp(28px, 3.5vw, 48px);
   }
   .hero-lower {

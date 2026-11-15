@@ -4,8 +4,10 @@ import Logo from '../../assets/logos/webs4all-20.svg';
 interface Props {
   /** '' en la home (anclas locales), '/' en otras páginas (/#servicios, ...) */
   hrefPrefix?: string;
+  /** Transparente sobre un hero oscuro y con fondo al hacer scroll (home y 404) */
+  overlay?: boolean;
 }
-const { hrefPrefix = '' } = Astro.props;
+const { hrefPrefix = '', overlay = false } = Astro.props;
 
 const links = [
   { id: 'servicios', label: 'Servicios' },
@@ -16,7 +18,12 @@ const links = [
 const contactHref = `${hrefPrefix}#contacto`;
 ---
 
-<header class="sticky top-0 z-100 w-full bg-navy-900 pt-(--space-16)" data-navbar>
+<header
+  class:list={['nav-header z-100 w-full pt-(--space-16)', overlay ? 'fixed inset-x-0 top-0' : 'sticky top-0']}
+  data-navbar
+  data-overlay={overlay ? '' : undefined}
+  data-theme="navy"
+>
   <div
     class="mx-auto flex h-(--space-64) w-full max-w-(--container-max) items-center gap-(--space-16) px-(--space-gutter-x)"
   >
@@ -72,8 +79,42 @@ const contactHref = `${hrefPrefix}#contacto`;
     </div>
   </div>
 </header>
+<!-- Evita el parpadeo: marca "arriba del todo" antes del primer pintado -->
+<script is:inline>
+  (function () {
+    var h = document.querySelector('[data-navbar][data-overlay]');
+    if (h && window.scrollY <= 8) h.setAttribute('data-top', '');
+  })();
+</script>
 
 <style>
+  .nav-header {
+    --nav-bg: var(--color-navy-900);
+    background-color: var(--nav-bg);
+    transition:
+      background-color var(--duration-350) var(--ease-out),
+      padding-top var(--duration-350) var(--ease-out);
+  }
+  /* Con fondo, la barra queda centrada: sin el margen superior que solo sirve sobre el hero */
+  .nav-header:not([data-top]) {
+    padding-top: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-header {
+      transition: none;
+    }
+  }
+  .nav-header[data-theme='violet'] {
+    --nav-bg: var(--color-violet-900);
+  }
+  .nav-header[data-theme='ink'] {
+    --nav-bg: var(--color-ink);
+  }
+  /* Arriba del todo, sobre el hero: sin fondo (salvo con el menú móvil abierto) */
+  .nav-header[data-top]:not(:has(.mobile-menu[open])) {
+    background-color: transparent;
+  }
+
   .nav-link {
     position: relative;
     display: flex;
@@ -92,45 +133,16 @@ const contactHref = `${hrefPrefix}#contacto`;
       box-shadow var(--duration-200);
   }
 
-  /* Brillo solo con puntero real y pantalla ancha */
+  /* Brillo azul: al pasar el puntero (solo puntero real) y en el enlace seleccionado */
   @media (hover: hover) and (min-width: 901px) {
-    .nav-link:not([aria-current='true']):hover {
+    .nav-link:hover {
       border-color: var(--color-blue-300);
       box-shadow: var(--shadow-glow-blue);
     }
   }
-
-  /* Seleccionado: anillo con degradado que se anima una sola vez */
   .nav-link[aria-current='true'] {
-    border-color: transparent;
-    font-weight: var(--font-weight-bold);
-  }
-  .nav-link[aria-current='true']::after {
-    content: '';
-    position: absolute;
-    inset: calc(var(--border-width) * -1);
-    padding: var(--border-width-strong);
-    border-radius: var(--radius-md);
-    background-image: var(--gradient-ring-nav);
-    background-size: 200% 100%;
-    background-position: 0% 50%;
-    pointer-events: none;
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#000 0 0) content-box exclude,
-      linear-gradient(#000 0 0);
-    animation: nav-ring var(--duration-ring) var(--ease-out) 1 both;
-  }
-  @keyframes nav-ring {
-    from {
-      background-position: 100% 50%;
-    }
-    to {
-      background-position: 0% 50%;
-    }
+    border-color: var(--color-blue-300);
+    box-shadow: var(--shadow-glow-blue);
   }
 
   .btn-contact {
@@ -147,6 +159,11 @@ const contactHref = `${hrefPrefix}#contacto`;
     transition:
       background-color var(--duration-200),
       color var(--duration-200);
+  }
+  @media (max-width: 900px) {
+    .btn-contact {
+      display: none;
+    }
   }
   .btn-contact:hover {
     background-image: none;
@@ -186,7 +203,10 @@ const contactHref = `${hrefPrefix}#contacto`;
     bottom: 0;
     top: var(--nav-height);
     overflow-y: auto;
-    background: var(--color-navy-900);
+    background: var(--nav-bg);
+  }
+  .nav-header:not([data-top]) .mm-panel {
+    top: calc(var(--nav-height) - var(--space-16));
   }
   .mm-nav {
     display: flex;
@@ -255,6 +275,37 @@ const contactHref = `${hrefPrefix}#contacto`;
       { rootMargin: '-45% 0px -50% 0px' },
     );
     sections.forEach((s) => io.observe(s));
+  }
+
+  // Nav superpuesto (home y 404): transparente arriba del todo y, al bajar, con un fondo que
+  // cambia según la sección que queda bajo la barra.
+  const header = document.querySelector<HTMLElement>('[data-navbar][data-overlay]');
+  if (header) {
+    const themes: Record<string, string> = { top: 'navy', 'sobre-mi': 'navy', conversemos: 'violet' };
+    const blocks = Array.from(document.querySelectorAll<HTMLElement>('main > section, body > footer'));
+    let queued = false;
+
+    const update = () => {
+      queued = false;
+      if (window.scrollY > 8) header.removeAttribute('data-top');
+      else header.setAttribute('data-top', '');
+
+      const probe = header.offsetHeight / 2;
+      const block = blocks.find((b) => {
+        const r = b.getBoundingClientRect();
+        return r.top <= probe && r.bottom > probe;
+      });
+      if (block) header.dataset.theme = themes[block.id] ?? 'ink';
+    };
+    const queue = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
   }
 
   // Menú móvil: el <details> ya abre y cierra solo; esto agrega el comportamiento accesible.

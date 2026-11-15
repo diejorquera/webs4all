@@ -16,6 +16,8 @@ interface Props {
   noindex?: boolean;
   /** Con noindex: usa "nofollow" en vez de "follow" */
   nofollow?: boolean;
+  /** Nav transparente superpuesto al hero (home y 404) */
+  overlayNav?: boolean;
 }
 
 // Valores de la landing, tal como los define la guía de estilo (sección 12, tabla "Páginas").
@@ -29,6 +31,7 @@ const {
   image = '/og.png',
   noindex = false,
   nofollow = false,
+  overlayNav = false,
 } = Astro.props;
 
 // URL canónica absoluta, con barra final (coincide con la salida estática /ruta/index.html)
@@ -87,7 +90,7 @@ const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
     >
       Saltar al contenido
     </a>
-    <NavBar hrefPrefix={hrefPrefix} />
+    <NavBar hrefPrefix={hrefPrefix} overlay={overlayNav} />
     <main id="contenido">
       <slot />
     </main>
