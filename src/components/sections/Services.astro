@@ -90,18 +90,35 @@ const services = [
       <ol class="svc-list m-0 flex list-none flex-col p-0" role="list">
         {
           services.map((s) => (
-            <li class="svc-card">
-              <div class="svc-head">
-                <span class="svc-num">{s.n}</span>
-                <h3 class="svc-h3 m-0 font-extrabold uppercase">{s.title}</h3>
-              </div>
-              <div class="svc-body">
-                <p class="svc-desc m-0">{s.lead}</p>
-                <ul class="svc-items m-0 list-none p-0">
-                  {s.items.map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
+            <li class="svc-card" data-open="true">
+              <h3 class="svc-head m-0">
+                <button
+                  type="button"
+                  class="svc-toggle"
+                  aria-expanded="true"
+                  aria-controls={`svc-body-${s.n}`}
+                >
+                  <span class="svc-num">{s.n}</span>
+                  <span class="svc-h3 font-extrabold uppercase">{s.title}</span>
+                  <span class="svc-ind" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                      <path d="M2 8h12" />
+                      <path class="svc-v" d="M8 2v12" />
+                    </svg>
+                  </span>
+                </button>
+              </h3>
+              <div class="svc-panel" id={`svc-body-${s.n}`}>
+                <div class="svc-clip">
+                  <div class="svc-body">
+                    <p class="svc-desc m-0">{s.lead}</p>
+                    <ul class="svc-items m-0 list-none p-0">
+                      {s.items.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </li>
           ))
@@ -115,6 +132,34 @@ const services = [
     </div>
   </div>
 </section>
+
+<script>
+  // Desplegables solo en móvil / tablet (<901px). En escritorio las tarjetas quedan abiertas.
+  const mq = window.matchMedia('(min-width: 901px)');
+  const cards = document.querySelectorAll<HTMLElement>('.svc-card');
+
+  const setOpen = (card: HTMLElement, open: boolean) => {
+    card.dataset.open = String(open);
+    card.querySelector('.svc-toggle')?.setAttribute('aria-expanded', String(open));
+  };
+
+  const sync = () => {
+    cards.forEach((card) => {
+      const btn = card.querySelector<HTMLButtonElement>('.svc-toggle');
+      if (!btn) return;
+      btn.disabled = mq.matches;
+      setOpen(card, mq.matches);
+    });
+  };
+
+  cards.forEach((card) => {
+    card.querySelector('.svc-toggle')?.addEventListener('click', () => {
+      setOpen(card, card.dataset.open !== 'true');
+    });
+  });
+  mq.addEventListener('change', sync);
+  sync();
+</script>
 
 <style>
   .svc-section {
@@ -143,8 +188,6 @@ const services = [
 
   .svc-card {
     box-sizing: border-box;
-    min-height: 400px;
-    padding-bottom: var(--space-56);
     background: var(--color-surface-warm);
     border-top: var(--border-width) solid var(--color-border-strong);
   }
@@ -152,14 +195,76 @@ const services = [
     border-top: 0;
   }
   .svc-list {
-    gap: var(--space-48);
+    gap: 0;
+  }
+  .svc-card:last-child {
+    border-bottom: var(--border-width) solid var(--color-border-strong);
   }
 
-  .svc-head {
+  .svc-toggle {
     display: flex;
     align-items: center;
     gap: var(--space-20);
-    height: var(--space-64);
+    width: 100%;
+    min-height: var(--space-64);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .svc-toggle:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-ink);
+    outline-offset: var(--focus-offset);
+    border-radius: var(--radius-md);
+  }
+  .svc-toggle:disabled {
+    cursor: default;
+    color: inherit;
+  }
+  .svc-ind {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--space-32);
+    height: var(--space-32);
+    margin-left: auto;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+  }
+  .svc-v {
+    transform-origin: 8px 8px;
+    transition:
+      opacity var(--duration-200),
+      transform var(--duration-200);
+  }
+  .svc-card[data-open='true'] .svc-v {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+
+  /* Despliegue: el cuerpo se anima con grid-template-rows (sin JS de medidas) */
+  .svc-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-400) var(--ease-out);
+  }
+  .svc-card[data-open='true'] .svc-panel {
+    grid-template-rows: 1fr;
+  }
+  .svc-clip {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s var(--duration-400);
+  }
+  .svc-card[data-open='true'] .svc-clip {
+    visibility: visible;
+    transition-delay: 0s;
   }
   .svc-num {
     font-size: var(--text-body-sm);
@@ -177,7 +282,7 @@ const services = [
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-24) var(--space-48);
-    padding-top: var(--space-16);
+    padding: var(--space-16) 0 var(--space-24);
   }
   .svc-desc {
     flex: 1 1 260px;
@@ -210,11 +315,22 @@ const services = [
       position: sticky;
       top: var(--svc-top);
     }
-    .svc-head {
+    .svc-list {
+      gap: var(--space-48);
+    }
+    .svc-toggle {
       height: var(--svc-step);
+    }
+    .svc-ind {
+      display: none;
+    }
+    .svc-card:last-child {
+      border-bottom: 0;
     }
     .svc-card {
       position: sticky;
+      min-height: 400px;
+      padding-bottom: var(--space-56);
     }
     .svc-card:nth-child(1) {
       top: var(--svc-top);
@@ -227,6 +343,14 @@ const services = [
     }
     .svc-card:nth-child(4) {
       top: calc(var(--svc-top) + var(--svc-step) * 3);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc-panel,
+    .svc-clip,
+    .svc-v {
+      transition: none;
     }
   }
 </style>

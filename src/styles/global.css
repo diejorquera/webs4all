@@ -38,6 +38,7 @@
   --color-ink: #121212;               /* texto principal, bordes fuertes, botón oscuro, pie */
   --color-violet-700: #3D2887;        /* inicio degradado CTA, Mantención y SEO, banda de frases */
   --color-violet-900: #1E1D2C;        /* fin degradado CTA; texto del botón claro */
+  --color-whatsapp: #25D366;          /* verde oficial de WhatsApp (botón flotante) */
 
   /* Color — texto */
   --color-text-primary: #121212;
@@ -87,7 +88,7 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
-  --text-display-hero: clamp(32px, 6vw, 90px);
+  --text-display-hero: clamp(44px, 6vw, 90px);
   --text-display-404: clamp(112px, 24cqw, 240px);
   --text-h1-reading: clamp(34px, 4.4cqw, 60px);
   --text-h2-section: clamp(32px, 4vw, 56px);

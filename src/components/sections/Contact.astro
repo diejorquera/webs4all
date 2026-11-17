@@ -397,6 +397,10 @@ const whatsappHref = buildWhatsappUrl();
     }
   }
   @container (max-width: 599px) {
+    /* título→párrafo (16px) + 2px */
+    .ct-left {
+      gap: calc(var(--space-16) + 2px);
+    }
     .ct-btns {
       flex-direction: column;
     }

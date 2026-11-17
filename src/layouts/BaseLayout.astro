@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import NavBar from '../components/layout/NavBar.astro';
 import SiteFooter from '../components/layout/SiteFooter.astro';
+import WhatsappFab from '../components/ui/WhatsappFab.astro';
 // Precarga la fuente principal: sin esto se descubre recién al leer el CSS
 import fontLatin from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 
@@ -95,5 +96,6 @@ const hrefPrefix = Astro.url.pathname === '/' ? '' : '/';
       <slot />
     </main>
     <SiteFooter />
+    <WhatsappFab />
   </body>
 </html>
