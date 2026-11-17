@@ -161,6 +161,7 @@ const plans = [
                 rel="noopener noreferrer"
               >
                 {p.cta}
+                <span class="sr-only"> {p.name}</span>
               </Button>
 
               <ul class="ps-list">
@@ -178,6 +179,7 @@ const plans = [
                 <span>
                   <span class="ps-lbl-more">Ver más información</span>
                   <span class="ps-lbl-less">Ver menos</span>
+                  <span class="sr-only"> {p.name}</span>
                 </span>
                 <span aria-hidden="true">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -221,6 +223,25 @@ const plans = [
 </section>
 
 <script>
+  // La región solo es enfocable (y se anuncia) cuando de verdad hay scroll horizontal
+  const scroller = document.querySelector<HTMLElement>('.ps-scroller');
+  if (scroller) {
+    const label = scroller.getAttribute('aria-label') ?? '';
+    const sync = () => {
+      if (scroller.scrollWidth > scroller.clientWidth) {
+        scroller.setAttribute('tabindex', '0');
+        scroller.setAttribute('role', 'region');
+        scroller.setAttribute('aria-label', label);
+      } else {
+        scroller.removeAttribute('tabindex');
+        scroller.removeAttribute('role');
+        scroller.removeAttribute('aria-label');
+      }
+    };
+    new ResizeObserver(sync).observe(scroller);
+    sync();
+  }
+
   // Despliegue de "Ver más información" (sin React)
   document.querySelectorAll<HTMLButtonElement>('.ps-toggle').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -285,6 +306,12 @@ const plans = [
   /* ───── Tarjetas ───── */
   .ps-scroller {
     overflow-x: visible;
+    /* item de un flex en columna: sin esto crece al ancho del contenido y ensancha la página */
+    min-width: 0;
+    max-width: 100%;
+    /* los .sr-only (absolute) de las tarjetas se anclan aquí y quedan recortados por el scroll,
+       en vez de ensanchar la página */
+    position: relative;
   }
   .ps-grid {
     display: grid;
@@ -408,7 +435,7 @@ const plans = [
     border-radius: var(--radius-tag);
     background: var(--color-violet-700);
     color: var(--color-text-on-dark);
-    font-size: var(--text-label-xs);
+    font-size: var(--text-label);
     font-weight: var(--font-weight-bold);
     letter-spacing: var(--tracking-label-xs);
     line-height: var(--leading-none);
