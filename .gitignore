@@ -27,3 +27,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 design-references/
+
+# cache local de wrangler
+.wrangler/
