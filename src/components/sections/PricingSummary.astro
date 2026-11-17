@@ -124,6 +124,8 @@ const plans = [
     </div>
 
     <!-- Carrusel arrastrable en pantallas medias y chicas; grilla de 4 en escritorio -->
+    <!-- Región con scroll horizontal: debe poder enfocarse con teclado (tiene role y aria-label) -->
+    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
     <div class="ps-scroller" tabindex="0" role="region" aria-label="Planes (desliza para ver más)">
       <ul class="ps-grid">
         {

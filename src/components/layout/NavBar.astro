@@ -84,7 +84,7 @@ const contactHref = `${hrefPrefix}#contacto`;
 <!-- Evita el parpadeo: marca "arriba del todo" antes del primer pintado -->
 <script is:inline>
   (function () {
-    var h = document.querySelector('[data-navbar][data-overlay]');
+    const h = document.querySelector('[data-navbar][data-overlay]');
     if (h && window.scrollY <= 8) h.setAttribute('data-top', '');
   })();
 </script>

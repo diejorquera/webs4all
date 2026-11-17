@@ -10,13 +10,8 @@ describe('faq', () => {
     }
   });
 
-  it('usa los mismos nombres de plan y precios que la sección Precios', () => {
-    const precios = faq[0].a;
-    expect(precios).toContain('Web Express vale $100.000');
-    expect(precios).toContain('plan Básico $250.000');
-    expect(precios).toContain('Estándar $480.000');
-    expect(precios).toContain('Tienda online $750.000');
-    // nombres antiguos que no existen en Precios
-    expect(precios).not.toMatch(/one page|seis páginas/i);
+  it('no menciona nombres de plan antiguos (los precios viven solo en Precios)', () => {
+    const todo = faq.map((item) => `${item.q} ${item.a}`).join(' ');
+    expect(todo).not.toMatch(/one page|seis páginas|Web Express|plan Básico|Estándar|Tienda online \$/i);
   });
 });
