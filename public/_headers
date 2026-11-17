@@ -16,4 +16,4 @@
   # Pasos: 1) publicar, 2) abrir el sitio con la consola (F12) y confirmar que no hay avisos,
   # 3) cambiar el nombre de la cabecera a "Content-Security-Policy" para que se aplique.
   # Si el formulario envía a un dominio concreto, reemplazar "https:" de connect-src por ese dominio.
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'

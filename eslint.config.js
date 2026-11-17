@@ -41,7 +41,7 @@ export default defineConfig(
 
   // Configuración y tests (Node)
   {
-    files: ['*.config.{js,mjs,ts}', 'tests/**/*.ts'],
+    files: ['*.config.{js,mjs,ts}', 'tests/**/*.ts', 'functions/**/*.js'],
     languageOptions: { globals: { ...globals.node } },
   },
 );

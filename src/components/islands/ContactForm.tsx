@@ -1,4 +1,4 @@
-import { useRef, useState, type SyntheticEvent } from 'react';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import {
   submitForm,
   validateAll,
@@ -13,8 +13,6 @@ interface Props {
   email: string;
   /** Enlace de WhatsApp (armado en el servidor con src/lib/whatsapp.ts) */
   whatsappHref: string;
-  /** Enlace a la política de privacidad */
-  privacyHref: string;
 }
 
 const OPTIONS = ['Página web', 'Tienda online', 'Mantención', 'SEO', 'No estoy seguro'];
@@ -23,12 +21,70 @@ const EMPTY: FormValues = { nombre: '', contacto: '', necesidad: '', mensaje: ''
 
 type Status = 'idle' | 'sending' | 'error';
 
-export default function ContactForm({ email, whatsappHref, privacyHref }: Props) {
+const SITE_KEY = String(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '');
+const TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
+interface TurnstileApi {
+  render: (el: HTMLElement, options: Record<string, unknown>) => string;
+  reset: (id?: string) => void;
+  remove: (id?: string) => void;
+}
+declare global {
+  interface Window {
+    turnstile?: TurnstileApi;
+  }
+}
+
+/** Carga el script de Turnstile una sola vez. */
+function loadTurnstile(): Promise<TurnstileApi> {
+  return new Promise((resolve, reject) => {
+    if (window.turnstile) return resolve(window.turnstile);
+    let script = document.querySelector<HTMLScriptElement>('script[data-turnstile]');
+    if (!script) {
+      script = document.createElement('script');
+      script.src = TURNSTILE_SRC;
+      script.async = true;
+      script.dataset.turnstile = '';
+      document.head.appendChild(script);
+    }
+    script.addEventListener('load', () => (window.turnstile ? resolve(window.turnstile) : reject()));
+    script.addEventListener('error', () => reject());
+  });
+}
+
+export default function ContactForm({ email, whatsappHref }: Props) {
   const [values, setValues] = useState<FormValues>(EMPTY);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [showSummary, setShowSummary] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
+  const [serverError, setServerError] = useState('');
   const honeypot = useRef<HTMLInputElement>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
+  const widgetId = useRef<string>('');
+  const token = useRef('');
+
+  // Turnstile en modo "interaction-only": solo se ve si Cloudflare necesita una verificación manual.
+  useEffect(() => {
+    if (!SITE_KEY || !widgetRef.current) return;
+    let cancelled = false;
+    loadTurnstile()
+      .then((api) => {
+        if (cancelled || !widgetRef.current) return;
+        widgetId.current = api.render(widgetRef.current, {
+          sitekey: SITE_KEY,
+          appearance: 'interaction-only',
+          language: 'es',
+          callback: (t: string) => (token.current = t),
+          'expired-callback': () => (token.current = ''),
+          'error-callback': () => (token.current = ''),
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      if (widgetId.current) window.turnstile?.remove(widgetId.current);
+    };
+  }, []);
 
   const set = (name: keyof FormValues, value: string) => {
     setValues((v) => ({ ...v, [name]: value }));
@@ -68,11 +124,15 @@ export default function ContactForm({ email, whatsappHref, privacyHref }: Props)
 
     setShowSummary(false);
     setStatus('sending');
-    const result = await submitForm(values, honeypot.current?.value ?? '');
+    const result = await submitForm(values, honeypot.current?.value ?? '', token.current);
     if (result.ok) {
       window.location.assign('/gracias/');
       return; // se queda en "enviando" mientras navega
     }
+    // El token de Turnstile es de un solo uso: se pide uno nuevo para reintentar
+    token.current = '';
+    if (widgetId.current) window.turnstile?.reset(widgetId.current);
+    setServerError(result.error ?? '');
     setStatus('error');
   };
 
@@ -109,7 +169,7 @@ export default function ContactForm({ email, whatsappHref, privacyHref }: Props)
         {status === 'error' && (
           <>
             <p className="m-0">
-              No se pudo enviar. Inténtalo de nuevo o escríbeme directo por WhatsApp.
+              {serverError || 'No se pudo enviar. Inténtalo de nuevo o escríbeme directo por WhatsApp.'}
             </p>
             <p className="ct-senderr-alt">
               <button type="submit" className="ct-retry">
@@ -195,8 +255,11 @@ export default function ContactForm({ email, whatsappHref, privacyHref }: Props)
         <input ref={honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" />
       </div>
 
+      {/* Turnstile (invisible salvo que pida verificación) */}
+      <div ref={widgetRef} />
+
       <p className="ct-privacy">
-        Uso tus datos solo para responderte. <a href={privacyHref}>Política de privacidad</a>
+        Uso tus datos solo para responderte.
       </p>
 
       <div className="ct-btns">

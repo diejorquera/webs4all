@@ -50,34 +50,37 @@ export function validateAll(values: FormValues): FieldErrors {
   return errors;
 }
 
-export type SubmitResult = { ok: true } | { ok: false };
+export type SubmitResult = { ok: true } | { ok: false; error?: string };
 
 const TIMEOUT_MS = 15000;
+const DEFAULT_ENDPOINT = '/api/contact';
 
 /**
- * Envía el formulario por POST (JSON) a PUBLIC_FORM_ENDPOINT.
+ * Envía el formulario por POST (JSON) a la Pages Function /api/contact
+ * (o a PUBLIC_FORM_ENDPOINT si se define).
  * - `honeypot` con contenido => es un bot: se finge éxito y no se envía nada.
- * - Sin endpoint en desarrollo: simula éxito y avisa en consola.
- * - Sin endpoint en producción: falla (mejor que perder un contacto en silencio).
+ * - `turnstileToken` es el token del widget de Cloudflare Turnstile; el servidor lo verifica.
+ * - En desarrollo (`npm run dev`) sin endpoint explícito: simula éxito, porque Astro no sirve /functions.
  * Nunca se escribe en consola ningún dato del usuario.
  */
-export async function submitForm(values: FormValues, honeypot: string): Promise<SubmitResult> {
+export async function submitForm(
+  values: FormValues,
+  honeypot: string,
+  turnstileToken = '',
+): Promise<SubmitResult> {
   if (honeypot.trim() !== '') return { ok: true };
 
-  const endpoint = String(import.meta.env.PUBLIC_FORM_ENDPOINT ?? '').trim();
+  const custom = String(import.meta.env.PUBLIC_FORM_ENDPOINT ?? '').trim();
 
-  if (!endpoint) {
-    if (import.meta.env.DEV) {
-      console.warn(
-        '[form] PUBLIC_FORM_ENDPOINT está vacío: envío SIMULADO (solo desarrollo). No se envió nada.',
-      );
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      return { ok: true };
-    }
-    console.error('[form] PUBLIC_FORM_ENDPOINT no está configurado: no se puede enviar el formulario.');
-    return { ok: false };
+  if (!custom && import.meta.env.DEV) {
+    console.warn(
+      '[form] PUBLIC_FORM_ENDPOINT está vacío: envío SIMULADO (solo desarrollo). No se envió nada.',
+    );
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    return { ok: true };
   }
 
+  const endpoint = custom || DEFAULT_ENDPOINT;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -89,10 +92,19 @@ export async function submitForm(values: FormValues, honeypot: string): Promise<
         contacto: values.contacto.trim(),
         necesidad: values.necesidad,
         mensaje: values.mensaje.trim(),
+        'cf-turnstile-response': turnstileToken,
       }),
       signal: controller.signal,
     });
-    return response.ok ? { ok: true } : { ok: false };
+    if (response.ok) return { ok: true };
+    let error: string | undefined;
+    try {
+      const data = await response.json();
+      if (typeof data?.error === 'string') error = data.error;
+    } catch {
+      /* respuesta sin JSON */
+    }
+    return { ok: false, error };
   } catch {
     return { ok: false };
   } finally {

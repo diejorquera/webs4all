@@ -18,6 +18,9 @@ pnpm-debug.log*
 .env.*
 !.env.example
 
+# secretos locales de Cloudflare (wrangler pages dev)
+.dev.vars
+
 # macOS-specific files
 .DS_Store
 

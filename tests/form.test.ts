@@ -93,14 +93,22 @@ describe('submitForm', () => {
     expect(warn).toHaveBeenCalledOnce();
   });
 
-  it('sin endpoint en producción: falla (no pierde contactos en silencio)', async () => {
+  it('sin endpoint en producción: usa /api/contact y envía el token de Turnstile', async () => {
     vi.stubEnv('PUBLIC_FORM_ENDPOINT', '');
     vi.stubEnv('DEV', false);
-    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const result = await submitForm(valid, '');
-    expect(result).toEqual({ ok: false });
-    expect(fetchMock).not.toHaveBeenCalled();
-    expect(error).toHaveBeenCalledOnce();
+    fetchMock.mockResolvedValue({ ok: true });
+    const result = await submitForm(valid, '', 'token-123');
+    expect(result).toEqual({ ok: true });
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('/api/contact');
+    expect(JSON.parse(init.body)['cf-turnstile-response']).toBe('token-123');
+  });
+
+  it('error del servidor: devuelve el mensaje de la API', async () => {
+    vi.stubEnv('PUBLIC_FORM_ENDPOINT', '');
+    vi.stubEnv('DEV', false);
+    fetchMock.mockResolvedValue({ ok: false, status: 400, json: async () => ({ ok: false, error: 'Elige una opción.' }) });
+    expect(await submitForm(valid, '')).toEqual({ ok: false, error: 'Elige una opción.' });
   });
 
   it('con endpoint: hace POST JSON con los datos recortados', async () => {
@@ -118,13 +126,14 @@ describe('submitForm', () => {
       contacto: 'prueba@example.com',
       necesidad: 'SEO',
       mensaje: 'hola',
+      'cf-turnstile-response': '',
     });
   });
 
   it('respuesta HTTP de error o fallo de red: devuelve ok:false', async () => {
     vi.stubEnv('PUBLIC_FORM_ENDPOINT', 'https://example.test/form');
     fetchMock.mockResolvedValueOnce({ ok: false, status: 500 });
-    expect(await submitForm(valid, '')).toEqual({ ok: false });
+    expect(await submitForm(valid, '')).toEqual({ ok: false, error: undefined });
     fetchMock.mockRejectedValueOnce(new TypeError('network'));
     expect(await submitForm(valid, '')).toEqual({ ok: false });
   });
