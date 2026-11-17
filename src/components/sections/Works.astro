@@ -5,28 +5,27 @@ import ExternalArrowLink from '../ui/ExternalArrowLink.astro';
 import farmaciasShot from '../../assets/ece38ef6680915d561a839e99aa1487b.webp';
 import soynutriShot from '../../assets/38bb3f15bf1f501e85bb94d9bfc9a236.webp';
 
-// Los textos y URLs vienen del artboard. Los corchetes son placeholders que el propio
-// artboard ya trae sin completar: [año de inicio] y [ciudades o comunas verificadas].
+// Textos y URLs de copiaContenido.md.
 const works = [
   {
     id: 'farmaciashoy',
-    meta: '2025 · Buscador de farmacias',
-    kind: 'Proyecto propio',
+    years: '2025 - 2026',
+    meta: 'Buscador de farmacias',
     name: 'FarmaciasHoy.cl',
     href: 'https://farmaciashoy.cl',
     shot: farmaciasShot,
     alt: 'Captura de la página de inicio de FarmaciasHoy.cl',
-    text: 'Diseño, desarrollo web y SEO de un buscador de farmacias de turno para todo Chile. Aparece en la primera página de Google en [ciudades o comunas verificadas], con una página propia para cada una.',
+    text: 'Diseño, desarrollo web y SEO de FarmaciasHoy.cl, un buscador de farmacias de turno para todo Chile construido sobre la API pública del MINSAL. Una página dedicada por comuna y por región, optimizada para búsqueda local. En tres meses (ago–nov 2026) alcanzó más de 100.000 usuarios activos, con el 96 % del tráfico desde Google orgánico y presencia en más de 250 comunas, con una interfaz simple pensada para consultas rápidas desde el celular. Sitio web desarrollado con React y Tailwind CSS.',
   },
   {
     id: 'soynutri',
-    meta: '[año de inicio] – hoy · Centro de nutrición',
-    kind: 'Cliente',
+    years: '2024 - 2026',
+    meta: 'Centro de nutrición',
     name: 'Soynutri.cl',
     href: 'https://soynutri.cl',
     shot: soynutriShot,
     alt: 'Captura de la página de inicio de Soynutri.cl',
-    text: 'Mantención continua del sitio de un centro de nutrición: cambios y nuevas secciones, SEO técnico, respaldo de correos y de la base de datos, y traspaso de un hosting a otro. También implementé las reservas de cursos con pago por Webpay.',
+    text: 'Mantención continua del sitio de un centro de nutrición: cambios, nuevas secciones y rediseño de secciones según lo solicitado, SEO técnico, respaldo de correos y de la base de datos, y traspaso de un hosting a otro. También implementé las reservas de cursos con pago por Webpay. Sitio desarrollado con WordPress y Elementor.',
   },
 ];
 ---
@@ -46,7 +45,7 @@ const works = [
     <div class="works-list flex flex-col">
       {
         works.map((w) => (
-          <WorkRow client:visible id={w.id} meta={w.meta} kind={w.kind} name={w.name}>
+          <WorkRow client:visible id={w.id} years={w.years} meta={w.meta} name={w.name}>
             <ExternalArrowLink
               slot="link"
               href={w.href}
@@ -120,6 +119,7 @@ const works = [
   .works .work-btn {
     display: grid;
     grid-template-columns: 24% minmax(0, 1fr);
+    column-gap: var(--space-24);
     align-items: center;
     width: 100%;
     box-sizing: border-box;
@@ -141,6 +141,13 @@ const works = [
     flex-direction: column;
     gap: var(--space-8);
     box-sizing: border-box;
+  }
+  .works .work-meta-years {
+    font-size: var(--text-label-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-label-xs);
+    line-height: var(--leading-snug);
+    color: var(--color-text-tertiary);
   }
   .works .work-meta-line {
     font-size: var(--text-note);

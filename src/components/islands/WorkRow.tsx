@@ -4,9 +4,11 @@ interface Props {
   /** Identificador corto: genera los ids trabajo-<id> */
   id: string;
   /** Línea superior, ej. "2025 · Buscador de farmacias" */
+  /** Años, ej. "2025 - 2026" (línea pequeña superior) */
+  years?: string;
   meta: string;
   /** Línea inferior, ej. "Proyecto propio" */
-  kind: string;
+  kind?: string;
   name: string;
   /** Enlace externo (slot "link") */
   link?: ReactNode;
@@ -22,7 +24,7 @@ const EVENT = 'workrow:open';
  * Solo una fila abierta a la vez (como el artboard): las filas se avisan por evento.
  * El contenido llega ya renderizado en el HTML; esta isla solo controla abrir/cerrar.
  */
-export default function WorkRow({ id, meta, kind, name, link, children }: Props) {
+export default function WorkRow({ id, years, meta, kind, name, link, children }: Props) {
   const [open, setOpen] = useState(false);
   const hovering = useRef(false);
   const btnId = `trabajo-${id}-btn`;
@@ -87,9 +89,11 @@ export default function WorkRow({ id, meta, kind, name, link, children }: Props)
             }}
           >
             <span className="work-meta">
+              {years && <span className="work-meta-years">{years}</span>}
               <span className="work-meta-line">{meta}</span>
-              <span className="work-meta-kind">{kind}</span>
+              {kind && <span className="work-meta-kind">{kind}</span>}
             </span>
+            <span className="sr-only">. </span>
             <span className="work-name">{name}</span>
             <span className="work-ind" aria-hidden="true">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">

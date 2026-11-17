@@ -38,7 +38,6 @@ const whatsappHref = buildWhatsappUrl();
         client:visible
         email={site.email}
         whatsappHref={whatsappHref}
-        privacyHref="/politica-de-privacidad/"
       />
     </div>
 
@@ -79,12 +78,12 @@ const whatsappHref = buildWhatsappUrl();
     max-width: var(--container-max);
     margin: 0 auto;
     box-sizing: border-box;
-    padding: clamp(64px, 8cqw, 120px) clamp(20px, 4.5cqw, 64px);
+    padding: clamp(40px, 5cqw, 80px) clamp(20px, 4.5cqw, 64px) clamp(64px, 8cqw, 120px);
   }
   .ct-left {
     display: flex;
     flex-direction: column;
-    gap: var(--space-32);
+    gap: var(--space-24);
   }
   .ct-head {
     display: flex;
@@ -171,8 +170,9 @@ const whatsappHref = buildWhatsappUrl();
   .ct-input:hover {
     border-color: var(--color-text-tertiary);
   }
-  .ct-input:focus {
-    outline: none;
+  .ct-input:focus-visible {
+    outline: var(--border-width-strong) solid var(--color-ink);
+    outline-offset: var(--focus-offset);
     border-color: var(--color-border-strong);
     box-shadow: var(--shadow-input-focus);
   }

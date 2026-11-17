@@ -4,7 +4,7 @@ import Hero from '../components/sections/Hero.astro';
 import Services from '../components/sections/Services.astro';
 import CtaBand from '../components/sections/CtaBand.astro';
 import Works from '../components/sections/Works.astro';
-import Pricing from '../components/sections/Pricing.astro';
+import PricingSummary from '../components/sections/PricingSummary.astro';
 import About from '../components/sections/About.astro';
 import Contact from '../components/sections/Contact.astro';
 import { site as siteConfig } from '../config/site';
@@ -58,8 +58,8 @@ const jsonLd = {
   <Hero />
   <Services />
   <CtaBand />
+  <PricingSummary />
   <Works />
-  <Pricing />
-  <About />
+  <About compact />
   <Contact />
 </BaseLayout>

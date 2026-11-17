@@ -95,6 +95,7 @@
   --text-h3-card: clamp(22px, 2.4vw, 34px);
   --text-h2-reading: clamp(21px, 1.9cqw, 26px);
   --text-price: clamp(40px, 3.9cqw, 56px);
+  --text-price-sm: clamp(34px, 14cqw, 44px);
   --text-number-step: clamp(44px, 4.4cqw, 64px);
   --text-lead: clamp(16px, 1.3vw, 19px);
   --text-body-lg: 17px;

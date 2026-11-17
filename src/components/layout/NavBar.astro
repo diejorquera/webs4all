@@ -9,12 +9,14 @@ interface Props {
 }
 const { hrefPrefix = '', overlay = false } = Astro.props;
 
+// Servicios y Trabajos son anclas de la home; todas son secciones de la home
+const path = Astro.url.pathname;
 const links = [
-  { id: 'servicios', label: 'Servicios' },
-  { id: 'trabajos', label: 'Trabajos' },
-  { id: 'precios', label: 'Precios' },
-  { id: 'sobre-mi', label: 'Sobre mí' },
-].map((l) => ({ ...l, href: `${hrefPrefix}#${l.id}` }));
+  { id: 'servicios', label: 'Servicios', href: `${hrefPrefix}#servicios` },
+  { id: 'precios', label: 'Precios', href: `${hrefPrefix}#precios` },
+  { id: 'trabajos', label: 'Trabajos', href: `${hrefPrefix}#trabajos` },
+  { id: 'sobre-mi', label: 'Sobre mí', href: `${hrefPrefix}#sobre-mi` },
+].map((l) => ({ ...l, current: l.href.replace(/\/$/, '') === path.replace(/\/$/, '') }));
 const contactHref = `${hrefPrefix}#contacto`;
 ---
 
@@ -40,7 +42,7 @@ const contactHref = `${hrefPrefix}#contacto`;
     <nav aria-label="Principal" class="nav-desktop flex items-center gap-(--space-16) max-[900px]:hidden">
       {
         links.map((l) => (
-          <a href={l.href} data-nav={l.id} class="nav-link">
+          <a href={l.href} data-nav={l.id} aria-current={l.current ? 'page' : undefined} class="nav-link">
             {l.label}
           </a>
         ))
@@ -67,7 +69,7 @@ const contactHref = `${hrefPrefix}#contacto`;
           <nav class="mm-nav" aria-label="Principal, móvil">
             {
               links.map((l) => (
-                <a href={l.href} data-nav={l.id} class="mm-link">
+                <a href={l.href} data-nav={l.id} aria-current={l.current ? 'page' : undefined} class="mm-link">
                   {l.label}
                 </a>
               ))
@@ -140,7 +142,7 @@ const contactHref = `${hrefPrefix}#contacto`;
       box-shadow: var(--shadow-glow-blue);
     }
   }
-  .nav-link[aria-current='true'] {
+  .nav-link[aria-current] {
     border-color: var(--color-blue-300);
     box-shadow: var(--shadow-glow-blue);
   }
@@ -227,7 +229,7 @@ const contactHref = `${hrefPrefix}#contacto`;
     font-weight: var(--font-weight-medium);
     text-decoration: none;
   }
-  .mm-link[aria-current='true'] {
+  .mm-link[aria-current] {
     font-weight: var(--font-weight-bold);
   }
   .mm-cta {

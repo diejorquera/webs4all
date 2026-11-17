@@ -1,8 +1,19 @@
 ---
+import { Image } from 'astro:assets';
+import diegoPhoto from '../../assets/diego.webp';
 import CursorHalo from '../islands/CursorHalo';
 import Timeline from '../islands/Timeline';
 import ExternalArrowLink from '../ui/ExternalArrowLink.astro';
 import { site } from '../../config/site';
+
+interface Props {
+  /** Home: solo la presentación, con enlace a /sobre-mi/ */
+  compact?: boolean;
+  /** /sobre-mi/: el título es el h1 de la página */
+  asH1?: boolean;
+}
+const { compact = false, asH1 = false } = Astro.props;
+const Heading = asH1 ? 'h1' : 'h2';
 
 // Textos del artboard, sin cambios.
 const tools = ['Webflow', 'WordPress', 'Shopify', 'React', 'SEO'];
@@ -11,7 +22,7 @@ const steps = [
   {
     n: '01',
     title: 'Conversamos',
-    desc: 'Media hora por llamada o WhatsApp. Me cuentas de tu negocio y qué necesitas.',
+    desc: 'Media hora por llamada, WhatsApp o una meet. Me cuentas de tu negocio y qué necesitas.',
   },
   {
     n: '02',
@@ -21,17 +32,17 @@ const steps = [
   {
     n: '03',
     title: 'Diseño y revisión',
-    desc: 'Me envías tu logo, fotos y datos. Te muestro el sitio funcionando y puedes pedir cambios en las rondas de revisión.',
+    desc: 'Me envías tu logo, fotos y datos. Te muestro el sitio funcionando y puedes pedir cambios en las rondas de revisión. Si no los tienes, no te preocupes: yo te guío y te ayudo.',
   },
   {
     n: '04',
     title: 'Publicación',
-    desc: 'Lo dejamos en línea, en tu dominio y a tu nombre, una vez hecho el pago final.',
+    desc: 'Lo dejamos en línea, en tu dominio y a tu nombre, una vez hecho el pago final. Antes de pagar te muestro el sitio terminado en un link de desarrollo; con el pago lo publico en tu dominio y hosting.',
   },
   {
     n: '05',
     title: 'Acompañamiento',
-    desc: 'Tienes 2 meses de mantención básica incluida, para cambios de textos e imágenes. En la Web Express, 7 días para corregir errores.',
+    desc: 'Sí, cotizamos planes de mantenimiento mensual según lo que necesites.',
   },
 ];
 ---
@@ -56,37 +67,23 @@ const steps = [
 
   <div class="sm-wrap">
     <div class="sm-intro">
-      <!--
-        TODO: no hay retrato todavía. Reemplazar este espacio reservado por la foto real
-        (mantener proporción 4/5; en móvil 1/1, máx. 280px) y quitar el marcador [PENDIENTE].
-      -->
-      <div class="sm-photo" role="img" aria-label="Espacio para el retrato de Diego">
-        <svg
-          aria-hidden="true"
-          width="72"
-          height="72"
-          viewBox="0 0 72 72"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        >
-          <circle cx="36" cy="26" r="12"></circle>
-          <path d="M14 62c3-12 12-18 22-18s19 6 22 18"></path>
-        </svg>
-        <span class="sm-photo-text">[PENDIENTE: retrato de Diego]</span>
+      <div class="sm-photo">
+        <Image
+          src={diegoPhoto}
+          alt="Retrato de Diego Jorquera"
+          widths={[280, 480, 640]}
+          sizes="(max-width: 767px) 280px, 40vw"
+          loading="lazy"
+          class="sm-photo-img"
+        />
       </div>
 
       <div class="sm-copy">
-        <h2 class="sm-h2">Hola, soy Diego</h2>
+        <Heading class="sm-h2">Hola, soy Diego</Heading>
         <p class="sm-p">
-          Soy ingeniero en informática y llevo cerca de 6 años haciendo sitios web con Webflow,
-          WordPress, Shopify y React. Trabajé en una empresa de desarrollo hasta 2026 y hoy lo hago
-          por mi cuenta, desde Talca, para todo Chile.
-        </p>
-        <p class="sm-p sm-p-muted">
-          Trabajo solo, y es a propósito: quien te responde el WhatsApp es el mismo que programa tu
-          página, así que nada se pierde entre un ejecutivo y un equipo.
+          Soy ingeniero en informática y llevo cerca de 6 años creando sitios web con distintas
+          tecnologías. He trabajado con todo tipo de clientes, desde pymes que venden puzzles hasta
+          empresas que quieren mostrar sus servicios.
         </p>
         <ul class="sm-tags" aria-label="Herramientas">
           {tools.map((t) => <li>{t}</li>)}
@@ -97,6 +94,8 @@ const steps = [
       </div>
     </div>
 
+    {
+      !compact && (
     <div class="sm-process">
       <div class="sm-process-head">
         <h3 class="sm-h3">Así trabajamos</h3>
@@ -106,9 +105,11 @@ const steps = [
       <Timeline client:visible steps={steps} />
 
       <p class="sm-note">
-        El plazo depende de tu plan, entre 5 y 20 días hábiles desde que me envías tu material.
+        El plazo depende de tu plan, entre 5 y 15 días hábiles desde que recibo el pago inicial y todos los materiales necesarios.
       </p>
     </div>
+      )
+    }
   </div>
 </section>
 
@@ -143,18 +144,41 @@ const steps = [
     overflow: hidden;
     background: color-mix(in srgb, var(--color-text-on-dark) 6%, transparent);
     border: var(--border-width) solid color-mix(in srgb, var(--color-text-on-dark) 22%, transparent);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-14);
-    color: var(--color-text-on-dark-muted);
   }
-  .sm-photo-text {
-    font-size: var(--text-label);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--tracking-marquee);
-    text-transform: uppercase;
+  /*
+   * La foto original es muy clara y saturada para el fondo azul marino: se pasa a blanco y negro,
+   * se tiñe con el azul de la sección y se funde hacia abajo con el fondo. Al pasar el mouse
+   * recupera el color.
+   */
+  .sm-photo-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* encuadre: la cara queda centrada también en el recorte cuadrado de móvil */
+    object-position: 35% 70%;
+    filter: grayscale(1) brightness(0.98);
+    transition: filter var(--duration-450) var(--ease-out);
+  }
+  .sm-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to top, var(--color-navy-900) 0%, transparent 35%),
+      color-mix(in srgb, var(--color-navy-800) 20%, transparent);
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+    transition: opacity var(--duration-450) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .sm-photo:hover .sm-photo-img {
+      filter: none;
+    }
+    .sm-photo:hover::after {
+      opacity: 0.25;
+    }
   }
 
   .sm-copy {
