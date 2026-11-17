@@ -56,7 +56,7 @@ const TIMEOUT_MS = 15000;
 const DEFAULT_ENDPOINT = '/api/contact';
 
 /**
- * Envía el formulario por POST (JSON) a la Pages Function /api/contact
+ * Envía el formulario por POST (JSON) a el Worker /api/contact
  * (o a PUBLIC_FORM_ENDPOINT si se define).
  * - `honeypot` con contenido => es un bot: se finge éxito y no se envía nada.
  * - `turnstileToken` es el token del widget de Cloudflare Turnstile; el servidor lo verifica.

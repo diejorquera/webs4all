@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: POST /api/contact
+// Manejador de POST /api/contact (lo llama worker/index.js)
 // Valida, verifica Turnstile y envía el correo con Resend. Los secretos vienen de context.env.
 
 const FROM = 'Webs4all <contacto@webs4all.cl>';
@@ -53,7 +53,7 @@ async function verifyTurnstile(token, secret, ip) {
   return result.success === true;
 }
 
-export async function onRequestPost({ request, env }) {
+export async function handleContact(request, env) {
   let data;
   try {
     data = await readBody(request);
@@ -129,10 +129,3 @@ export async function onRequestPost({ request, env }) {
 
   return json({ ok: true });
 }
-
-// Cualquier otro método: 405
-export const onRequest = () =>
-  new Response(JSON.stringify({ ok: false, error: 'Método no permitido.' }), {
-    status: 405,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', Allow: 'POST' },
-  });
