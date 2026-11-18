@@ -113,6 +113,33 @@ const steps = [
   </div>
 </section>
 
+<script>
+  // Móvil: la foto pasa de blanco y negro a color según se acerca al centro de la pantalla.
+  const photo = document.querySelector<HTMLElement>('#sobre-mi .sm-photo');
+  const touch = window.matchMedia('(hover: none)');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (photo && touch.matches) {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const vh = window.innerHeight;
+      const r = photo.getBoundingClientRect();
+      const center = r.top + r.height / 2;
+      // 0 cuando el centro de la foto está al borde inferior; 1 cuando llega a la mitad de la pantalla
+      const p = reduce.matches ? 1 : Math.min(1, Math.max(0, (vh - center) / (vh * 0.5)));
+      photo.style.setProperty('--sm-color', p.toFixed(3));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    reduce.addEventListener('change', update);
+  }
+</script>
+
 <style is:global>
   .sm {
     container-type: inline-size;
@@ -178,6 +205,23 @@ const steps = [
     }
     .sm-photo:hover::after {
       opacity: 0.25;
+    }
+  }
+  /*
+   * Táctil: no hay hover, así que el color se va sumando según avanza el scroll.
+   * --sm-color (0 a 1) lo calcula el script de abajo.
+   */
+  @media (hover: none) {
+    .sm-photo {
+      --sm-color: 0;
+    }
+    .sm-photo-img {
+      filter: grayscale(calc(1 - var(--sm-color))) brightness(0.98);
+      transition: none;
+    }
+    .sm-photo::after {
+      opacity: calc(0.6 - 0.35 * var(--sm-color));
+      transition: none;
     }
   }
 
