@@ -119,6 +119,10 @@ const whatsappHref = buildWhatsappUrl();
     flex-direction: column;
     gap: var(--space-20);
   }
+  /* Los contenedores vacíos (avisos y widget de Turnstile) no deben sumar hueco por el gap del formulario */
+  .ct-form > div:empty {
+    position: absolute;
+  }
   .ct-field {
     display: flex;
     flex-direction: column;
